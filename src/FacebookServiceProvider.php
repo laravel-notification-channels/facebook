@@ -18,6 +18,5 @@ class FacebookServiceProvider extends ServiceProvider
 
                 return new Facebook($pageToken);
             });
-
     }
 }

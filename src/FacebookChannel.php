@@ -28,7 +28,7 @@ class FacebookChannel
      */
     public function send($notifiable, Notification $notification)
     {
-        if (!$this->shouldSendMessage($notifiable, $notification)) {
+        if (! $this->shouldSendMessage($notifiable, $notification)) {
             return;
         }
 
@@ -39,7 +39,7 @@ class FacebookChannel
         }
 
         if ($message->toNotGiven()) {
-            if (!$to = $notifiable->routeNotificationFor('facebook')) {
+            if (! $to = $notifiable->routeNotificationFor('facebook')) {
                 return;
             }
 
