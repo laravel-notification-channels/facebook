@@ -54,4 +54,14 @@ class CouldNotSendNotification extends \Exception
     {
         return new static('You cannot add more than 3 buttons in 1 notification message.');
     }
+
+    /**
+     * Thrown when there is no user id or phone number provided.
+     *
+     * @return static
+     */
+    public static function recipientNotProvided()
+    {
+        return new static('Facebook notification recipient ID or Phone Number was not provided. Please refer usage docs.');
+    }
 }

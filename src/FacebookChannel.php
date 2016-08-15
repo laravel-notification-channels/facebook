@@ -5,6 +5,7 @@ namespace NotificationChannels\Facebook;
 use NotificationChannels\Facebook\Events\MessageWasSent;
 use NotificationChannels\Facebook\Events\SendingMessage;
 use Illuminate\Notifications\Notification;
+use NotificationChannels\Facebook\Exceptions\CouldNotSendNotification;
 
 class FacebookChannel
 {
@@ -40,7 +41,7 @@ class FacebookChannel
 
         if ($message->toNotGiven()) {
             if (! $to = $notifiable->routeNotificationFor('facebook')) {
-                return;
+                throw CouldNotSendNotification::recipientNotProvided();
             }
 
             $message->to($to);
