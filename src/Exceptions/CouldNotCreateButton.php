@@ -45,7 +45,7 @@ class CouldNotCreateButton extends \Exception
     public static function titleLimitExceeded($title)
     {
         $count = mb_strlen($title);
-        
+
         return new static(
             "Your title was {$count} characters long, which exceeds the 20 character limit. Please check the button template docs for more information."
         );
