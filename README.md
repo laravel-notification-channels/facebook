@@ -8,7 +8,7 @@
 [![Quality Score](https://img.shields.io/scrutinizer/g/laravel-notification-channels/facebook.svg?style=flat-square)](https://scrutinizer-ci.com/g/laravel-notification-channels/facebook)
 [![Total Downloads](https://img.shields.io/packagist/dt/laravel-notification-channels/facebook.svg?style=flat-square)](https://packagist.org/packages/laravel-notification-channels/facebook)
 
-This package makes it easy to send notifications using [Facebook](https://developers.facebook.com/docs/messenger-platform/product-overview) with Laravel 5.3.
+This package makes it easy to send notifications using the [Facebook Messenger](https://developers.facebook.com/docs/messenger-platform/product-overview) with Laravel 5.3.
 
 ## Contents
 
@@ -37,18 +37,20 @@ You must install the service provider:
 ```php
 // config/app.php
 'providers' => [
+    // ...
     NotificationChannels\Facebook\FacebookServiceProvider::class,
 ];
 ```
 
 ## Setting up your Facebook Bot
 
-Follow the [Getting Started](https://developers.facebook.com/docs/messenger-platform/quickstart) guide and get a page token.
+Follow the [Getting Started](https://developers.facebook.com/docs/messenger-platform/quickstart) guide in order to create a Facebook Messenger app, a Facebook page and a page token, which is connecting both.
 
-Then, configure your Facebook Page Token:
+Next we need to add this token to our Laravel configurations. Create a new Facebook section inside `config/services.php` and place the page token there:
 
 ```php
 // config/services.php
+// ...
 'facebook' => [
     'page-token' => env('FACEBOOK_PAGE_TOKEN', 'YOUR BOT TOKEN HERE')
 ]
@@ -56,7 +58,8 @@ Then, configure your Facebook Page Token:
 
 ## Usage
 
-You can now use the channel in your `via()` method inside the Notification class.
+Let's take an invoice-paid-notification as an example.
+You can now use the Facebook channel in your `via()` method, inside the InvoicePaid class. The `to($userId)` method defines the Facebook user, you want to send the notification to.
 
 ``` php
 use NotificationChannels\Facebook\FacebookChannel;
@@ -90,7 +93,7 @@ class InvoicePaid extends Notification
 }
 ```
 
-Here's a screenshot preview of the above notification on Facebook Messenger:
+The notification will be sent from your Facebook page, whose page token you have configured earlier. Here's a screenshot preview of the notification inside the chat window.
 
 ![Laravel Facebook Notification Example](https://cloud.githubusercontent.com/assets/1915268/17666125/58d6b66c-631c-11e6-9380-0400832b2e48.png)
 
