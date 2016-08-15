@@ -154,7 +154,7 @@ class Button implements \JsonSerializable
         $payload = [];
         $payload['type'] = $this->type;
 
-        if (!isset($this->title)) {
+        if (! isset($this->title)) {
             throw CouldNotCreateButton::titleNotProvided();
         }
 
@@ -162,13 +162,13 @@ class Button implements \JsonSerializable
         $payload['title'] = $this->title;
 
         if ($this->isType(self::TYPE_WEB_URL)) {
-            if (!isset($this->data)) {
+            if (! isset($this->data)) {
                 throw CouldNotCreateButton::urlNotProvided();
             }
 
             $payload['url'] = $this->data;
         } else {
-            if (!isset($this->data)) {
+            if (! isset($this->data)) {
                 throw CouldNotCreateButton::dataNotProvided($this->type);
             }
 
@@ -225,7 +225,7 @@ class Button implements \JsonSerializable
      */
     protected function validatePhoneNumber()
     {
-        if ($this->isType(self::TYPE_PHONE_NUMBER) && !starts_with($this->data, '+')) {
+        if ($this->isType(self::TYPE_PHONE_NUMBER) && ! starts_with($this->data, '+')) {
             throw CouldNotCreateButton::invalidPhoneNumberProvided($this->data);
         }
     }

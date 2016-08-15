@@ -110,7 +110,7 @@ class FacebookMessage
      */
     public function toNotGiven()
     {
-        return !isset($this->recipient);
+        return ! isset($this->recipient);
     }
 
     /**
@@ -146,4 +146,3 @@ class FacebookMessage
         return $payload;
     }
 }
-
