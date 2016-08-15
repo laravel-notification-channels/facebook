@@ -58,7 +58,8 @@ Next we need to add this token to our Laravel configurations. Create a new Faceb
 
 ## Usage
 
-You can now use the channel in your `via()` method inside the Notification class.
+Let's take an invoice-paid-notification as an example.
+You can now use the Facebook channel in your `via()` method, inside the InvoicePaid class. The `to($userId)` method defines the Facebook user, you want to send the notification to.
 
 ``` php
 use NotificationChannels\Facebook\FacebookChannel;
@@ -92,7 +93,7 @@ class InvoicePaid extends Notification
 }
 ```
 
-The notification is being sent to the Facebook page you have created before and you will find the message inside the chat window. Here's a screenshot of how this looks:
+The notification will be sent from your Facebook page, whose page token you have configured earlier. Here's a screenshot preview of the notification inside the chat window.
 
 ![Laravel Facebook Notification Example](https://cloud.githubusercontent.com/assets/1915268/17666125/58d6b66c-631c-11e6-9380-0400832b2e48.png)
 
