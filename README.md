@@ -39,7 +39,7 @@ You must install the service provider:
 'providers' => [
     // ...
     NotificationChannels\Facebook\FacebookServiceProvider::class,
-];
+],
 ```
 
 ## Setting up your Facebook Bot
@@ -53,7 +53,7 @@ Next we need to add this token to our Laravel configurations. Create a new Faceb
 // ...
 'facebook' => [
     'page-token' => env('FACEBOOK_PAGE_TOKEN', 'YOUR BOT TOKEN HERE')
-]
+],
 ```
 
 ## Usage
