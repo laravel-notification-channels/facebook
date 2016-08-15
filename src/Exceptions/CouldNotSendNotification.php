@@ -42,7 +42,7 @@ class CouldNotSendNotification extends \Exception
      */
     public static function couldNotCommunicateWithFacebook(Exception $exception)
     {
-        return new static('The communication with Facebook failed. Reason: ' . $exception->getMessage());
+        return new static('The communication with Facebook failed. Reason: '.$exception->getMessage());
     }
 
     /**
