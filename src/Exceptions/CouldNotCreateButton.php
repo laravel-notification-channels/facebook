@@ -42,22 +42,28 @@ class CouldNotCreateButton extends \Exception
      *
      * @return static
      */
-    public static function titleLimitExceeded()
+    public static function titleLimitExceeded($title)
     {
+        $count = mb_strlen($title);
+        
         return new static(
-            'Title size should not exceed 20 characters. Please check the button template docs for more information.'
+            "Your title was {$count} characters long, which exceeds the 20 character limit. Please check the button template docs for more information."
         );
     }
 
     /**
      * Thrown when the payload characters limit is exceeded.
      *
+     * @param mixed $data
+     *
      * @return static
      */
-    public static function payloadLimitExceeded()
+    public static function payloadLimitExceeded($data)
     {
+        $count = mb_strlen($data);
+
         return new static(
-            'Payload should not exceed 1000 characters. Please check the button template docs for more information.'
+            "Your payload was {$count} characters long, which exceeds the 1000 character limit. Please check the button template docs for more information."
         );
     }
 

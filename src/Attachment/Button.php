@@ -15,13 +15,8 @@ class Button implements \JsonSerializable
     /** @var string Button Type */
     protected $type;
 
-    /** Button Type: web_url */
     const TYPE_WEB_URL = 'web_url';
-
-    /** Button Type: postback */
     const TYPE_POSTBACK = 'postback';
-
-    /** Button Type: phone_number */
     const TYPE_PHONE_NUMBER = 'phone_number';
 
     /**
@@ -39,8 +34,6 @@ class Button implements \JsonSerializable
     }
 
     /**
-     * Button constructor.
-     *
      * @param string       $title
      * @param string|array $data
      * @param string       $type
@@ -202,7 +195,7 @@ class Button implements \JsonSerializable
     protected function validateTitle()
     {
         if (mb_strlen($this->title) > 20) {
-            throw CouldNotCreateButton::titleLimitExceeded();
+            throw CouldNotCreateButton::titleLimitExceeded($this->title);
         }
     }
 
@@ -214,7 +207,7 @@ class Button implements \JsonSerializable
     protected function validatePayload()
     {
         if (mb_strlen($this->data) > 1000) {
-            throw CouldNotCreateButton::payloadLimitExceeded();
+            throw CouldNotCreateButton::payloadLimitExceeded($this->data);
         }
     }
 

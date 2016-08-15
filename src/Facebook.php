@@ -2,6 +2,7 @@
 
 namespace NotificationChannels\Facebook;
 
+use Exception;
 use GuzzleHttp\Client as HttpClient;
 use GuzzleHttp\Exception\ClientException;
 use NotificationChannels\Facebook\Exceptions\CouldNotSendNotification;
@@ -85,14 +86,14 @@ class Facebook
             throw CouldNotSendNotification::facebookPageTokenNotProvided('You must provide your Facebook Page token to make any API requests.');
         }
 
-        $url = 'https://graph.facebook.com/v2.6/'.$endpoint.'?access_token='.$this->token;
+        $url = "https://graph.facebook.com/v2.6/{$endpoint}?access_token={$this->token}";
 
         try {
             return $this->httpClient()->request($method, $url, $options);
         } catch (ClientException $exception) {
             throw CouldNotSendNotification::facebookRespondedWithAnError($exception);
-        } catch (\Exception $exception) {
-            throw CouldNotSendNotification::couldNotCommunicateWithFacebook();
+        } catch (Exception $exception) {
+            throw CouldNotSendNotification::couldNotCommunicateWithFacebook($exception);
         }
     }
 }

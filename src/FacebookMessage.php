@@ -29,8 +29,6 @@ class FacebookMessage
     }
 
     /**
-     * Message constructor.
-     *
      * @param string $text
      */
     public function __construct($text = '')
@@ -85,7 +83,7 @@ class FacebookMessage
     }
 
     /**
-     * Add upto 3 call to action buttons.
+     * Add up to 3 call to action buttons.
      *
      * @param array $buttons
      *

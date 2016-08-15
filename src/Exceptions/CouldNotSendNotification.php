@@ -2,6 +2,7 @@
 
 namespace NotificationChannels\Facebook\Exceptions;
 
+use Exception;
 use GuzzleHttp\Exception\ClientException;
 
 class CouldNotSendNotification extends \Exception
@@ -35,11 +36,13 @@ class CouldNotSendNotification extends \Exception
     /**
      * Thrown when we're unable to communicate with Telegram.
      *
+     * @param \Exception $exception
+     *
      * @return static
      */
-    public static function couldNotCommunicateWithFacebook()
+    public static function couldNotCommunicateWithFacebook(Exception $exception)
     {
-        return new static('The communication with Facebook failed.');
+        return new static('The communication with Facebook failed. Reason: ' . $exception->getMessage());
     }
 
     /**
@@ -49,6 +52,6 @@ class CouldNotSendNotification extends \Exception
      */
     public static function messageButtonsLimitExceeded()
     {
-        return new static('You cannot add more than 3 buttons in 1 notification message!');
+        return new static('You cannot add more than 3 buttons in 1 notification message.');
     }
 }
