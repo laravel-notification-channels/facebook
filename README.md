@@ -52,7 +52,7 @@ Next we need to add this token to our Laravel configurations. Create a new Faceb
 // config/services.php
 // ...
 'facebook' => [
-    'page-token' => env('FACEBOOK_PAGE_TOKEN', 'YOUR BOT TOKEN HERE')
+    'page-token' => env('FACEBOOK_PAGE_TOKEN', 'YOUR PAGE TOKEN HERE')
 ],
 ```
 
