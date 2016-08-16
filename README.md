@@ -38,7 +38,7 @@ You must install the service provider:
 ```php
 // config/app.php
 'providers' => [
-    // ...
+    ...
     NotificationChannels\Facebook\FacebookServiceProvider::class,
 ],
 ```
@@ -51,10 +51,11 @@ Next we need to add this token to our Laravel configurations. Create a new Faceb
 
 ```php
 // config/services.php
-// ...
+...
 'facebook' => [
     'page-token' => env('FACEBOOK_PAGE_TOKEN', 'YOUR PAGE TOKEN HERE')
 ],
+...
 ```
 
 ## Usage
