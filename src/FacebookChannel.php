@@ -2,8 +2,6 @@
 
 namespace NotificationChannels\Facebook;
 
-use NotificationChannels\Facebook\Events\MessageWasSent;
-use NotificationChannels\Facebook\Events\SendingMessage;
 use Illuminate\Notifications\Notification;
 use NotificationChannels\Facebook\Exceptions\CouldNotSendNotification;
 
@@ -29,10 +27,6 @@ class FacebookChannel
      */
     public function send($notifiable, Notification $notification)
     {
-        if (! $this->shouldSendMessage($notifiable, $notification)) {
-            return;
-        }
-
         $message = $notification->toFacebook($notifiable);
 
         if (is_string($message)) {
@@ -48,20 +42,5 @@ class FacebookChannel
         }
 
         $this->fb->send($message->toArray());
-
-        event(new MessageWasSent($notifiable, $notification));
-    }
-
-    /**
-     * Check if we can send the notification.
-     *
-     * @param              $notifiable
-     * @param Notification $notification
-     *
-     * @return bool
-     */
-    protected function shouldSendMessage($notifiable, Notification $notification)
-    {
-        return event(new SendingMessage($notifiable, $notification), [], true) !== false;
     }
 }
