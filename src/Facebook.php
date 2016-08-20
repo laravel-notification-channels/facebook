@@ -86,7 +86,7 @@ class Facebook
             throw CouldNotSendNotification::facebookPageTokenNotProvided('You must provide your Facebook Page token to make any API requests.');
         }
 
-        $url = "https://graph.facebook.com/v2.6/{$endpoint}?access_token={$this->token}";
+        $url = "https://graph.facebook.com/v2.7/{$endpoint}?access_token={$this->token}";
 
         try {
             return $this->httpClient()->request($method, $url, $options);
