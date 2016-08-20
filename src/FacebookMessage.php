@@ -223,7 +223,7 @@ class FacebookMessage implements \JsonSerializable
      * Returns message for simple text message
      * @return array
      */
-    public function textMessageToArray()
+    protected function textMessageToArray()
     {
         $message = [];
         $message['recipient'] = $this->recipient;
@@ -236,7 +236,7 @@ class FacebookMessage implements \JsonSerializable
      * Returns message for attachment message
      * @return array
      */
-    public function attachmentMessageToArray()
+    protected function attachmentMessageToArray()
     {
         $message = [];
         $message['recipient'] = $this->recipient;
@@ -250,7 +250,7 @@ class FacebookMessage implements \JsonSerializable
      * Returns message for Generic Template message
      * @return array
      */
-    public function genericMessageToArray()
+    protected function genericMessageToArray()
     {
         $message = [];
         $message['recipient'] = $this->recipient;
@@ -265,7 +265,7 @@ class FacebookMessage implements \JsonSerializable
      * Returns message for Button Template message
      * @return array
      */
-    public function buttonMessageToArray()
+    protected function buttonMessageToArray()
     {
         $message = [];
         $message['recipient'] = $this->recipient;

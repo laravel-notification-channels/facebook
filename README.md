@@ -63,11 +63,13 @@ Next we need to add this token to our Laravel configurations. Create a new Faceb
 Let's take an invoice-paid-notification as an example.
 You can now use the Facebook channel in your `via()` method, inside the InvoicePaid class. The `to($userId)` method defines the Facebook user, you want to send the notification to.
 
+Based on the details you add (text, attachments etc.) will determine automatically the type of message to be sent. For example if you only add `text()` then it will be a basic message; using `attach()` will turn this into a attachment message. Having `buttons` or `cards` will cahneg this to the `Button Template` and `Generic Template` respectivily
+
 ``` php
 use NotificationChannels\Facebook\FacebookChannel;
 use NotificationChannels\Facebook\FacebookMessage;
-use NotificationChannels\Facebook\Attachment\Button;
-use NotificationChannels\Facebook\NotificationType;
+use NotificationChannels\Facebook\Component\Button;
+use NotificationChannels\Facebook\Enums\NotificationType;
 
 use Illuminate\Notifications\Notification;
 
@@ -121,18 +123,28 @@ public function routeNotificationForFacebook()
 
 - `to($userIdOrPhoneNumber)`: (string) Recipient's page-scoped User ID or Phone number of with the format `+1(212)555-2368`. **NOTE:** Sending a message to phone numbers requires the `pages_messaging_phone_number` permission. Refer [docs](https://developers.facebook.com/docs/messenger-platform/send-api-reference#phone_number) for more information.
 - `text('')`: (string) Notification message.
-- `buttons($buttons = [])`: (array) An array of "Call to Action" buttons (Created using `NotificationChannels\Facebook\Attachment\Button::create()`). You can add up to 3 buttons of one of the following types: `web_url`, `postback` or `phone_number`. See Button methods below for more details.
+- `attach($attachment_type, $url)`: (AttachmentType, string) An attachment type (IMAGE, AUDIO, VIDEO, FILE) and the url of this attachment
+- `buttons($buttons = [])`: (array) An array of "Call to Action" buttons (Created using `NotificationChannels\Facebook\Components\Button::create()`). You can add up to 3 buttons of one of the following types: `web_url`, `postback` or `phone_number`. See Button methods below for more details.
+- `cards($cards = [])`: (array) An array of item cards to be displayed in a carousel (Created using `NotificationChannels\Facebook\Components\Card::create()`). You can add up to 10 cards See Card methods below for more details.
 - `notificationType('')`: (string) Push Notification type: `REGULAR` will emit a sound/vibration and a phone notification; `SILENT_PUSH` will just emit a phone notification, `NO_PUSH` will not emit either. You can make use of `NotificationType::REGULAR`, `NotificationType::SILENT_PUSH` and `NotificationType::NO_PUSH` to make it easier to work with the type. This is an optional method, defaults to `REGULAR` type.
 
 ### Available Button methods
 
 - `title('')`: (string) Button Title.
 - `data('')`: (string) Button Data - It can be a web url, postback data or a formated phone number.
-- `type('')`: (string) Button Type - `web_url`, `postback` or `phone_number`.
+- `type('')`: (string) Button Type - `web_url`, `postback` or `phone_number`. Use `ButtonType` enumerator for garunteeing valid values
 - `isTypeWebUrl()`: Helper method to create a `web_url` type button.
 - `isTypePhoneNumber()`: Helper method to create a `phone_number` type button.
 - `isTypePostback()`: Helper method to create a `postback` type button.
 
+### Available Card methods
+
+- `title('')`: (string) Card Title.
+- `subtitle('')`: (string) Card Subtitle.
+- `url('')`: (string) Card Item Url.
+- `image('')`: (string) Card Image Url. Image ratio hould be 1.91:1
+- `buttons($buttons = [])`: (array) An array of "Call to Action" buttons (Created using `NotificationChannels\Facebook\Components\Button::create()`). You can add up to 3 buttons of one of the following types: `web_url`, `postback` or `phone_number`. See Button methods above for more details.
+-
 ## Contributing
 
 Please see [CONTRIBUTING](CONTRIBUTING.md) for details.
@@ -140,6 +152,7 @@ Please see [CONTRIBUTING](CONTRIBUTING.md) for details.
 ## Credits
 
 - [Syed Irfaq R.](https://github.com/irazasyed)
+- [David Piesse](https://github.com/davidpiesse)
 - [All Contributors](../../contributors)
 
 ## License
