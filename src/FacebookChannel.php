@@ -3,7 +3,7 @@
 namespace NotificationChannels\Facebook;
 
 use Illuminate\Notifications\Notification;
-use NotificationChannels\Facebook\Exceptions\CouldNotSendNotification;
+use NotificationChannels\Facebook\Exceptions\CouldNotCreateMessage;
 
 class FacebookChannel
 {
@@ -23,7 +23,7 @@ class FacebookChannel
      * @param mixed                                  $notifiable
      * @param \Illuminate\Notifications\Notification $notification
      *
-     * @throws \NotificationChannels\Facebook\Exceptions\CouldNotSendNotification
+     * @throws \NotificationChannels\Facebook\Exceptions\CouldNotCreateMessage
      */
     public function send($notifiable, Notification $notification)
     {
@@ -35,7 +35,7 @@ class FacebookChannel
 
         if ($message->toNotGiven()) {
             if (! $to = $notifiable->routeNotificationFor('facebook')) {
-                throw CouldNotSendNotification::recipientNotProvided();
+                throw CouldNotCreateMessage::recipientNotProvided();
             }
 
             $message->to($to);
