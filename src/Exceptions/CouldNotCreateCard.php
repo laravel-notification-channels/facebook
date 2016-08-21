@@ -36,6 +36,7 @@ class CouldNotCreateCard extends \Exception
     public static function subtitleLimitExceeded($title)
     {
         $count = mb_strlen($title);
+
         return new static(
             "Your subtitle was {$count} characters long, which exceeds the 80 character limit"
         );

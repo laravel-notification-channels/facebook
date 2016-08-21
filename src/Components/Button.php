@@ -19,9 +19,9 @@ class Button implements \JsonSerializable
     /**
      * Create a button.
      *
-     * @param string       $title
+     * @param string $title
      * @param string|array $data
-     * @param string       $type
+     * @param string $type
      *
      * @return static
      */
@@ -31,9 +31,9 @@ class Button implements \JsonSerializable
     }
 
     /**
-     * @param string       $title
+     * @param string $title
      * @param string|array $data
-     * @param string       $type
+     * @param string $type
      */
     public function __construct($title = '', $data = null, $type = ButtonType::WEB_URL)
     {
@@ -98,7 +98,7 @@ class Button implements \JsonSerializable
     }
 
     /**
-     * Set button type as postback..
+     * Set button type as postback.
      *
      * @return $this
      */
@@ -144,19 +144,22 @@ class Button implements \JsonSerializable
         $payload = [];
         $payload['type'] = $this->type;
 
-        if (!isset($this->title)) 
+        if (!isset($this->title)) {
             throw CouldNotCreateButton::titleNotProvided();
+        }
 
         $this->validateTitle();
         $payload['title'] = $this->title;
 
         if ($this->isType(ButtonType::WEB_URL)) {
-            if (!isset($this->data)) 
+            if (!isset($this->data)) {
                 throw CouldNotCreateButton::urlNotProvided();
+            }
             $payload['url'] = $this->data;
         } else {
-            if (!isset($this->data))
+            if (!isset($this->data)) {
                 throw CouldNotCreateButton::dataNotProvided($this->type);
+            }
             if ($this->isType(ButtonType::PHONE_NUMBER)) {
                 $this->validatePhoneNumber();
                 $payload['payload'] = $this->data;

@@ -63,7 +63,7 @@ Next we need to add this token to our Laravel configurations. Create a new Faceb
 Let's take an invoice-paid-notification as an example.
 You can now use the Facebook channel in your `via()` method, inside the InvoicePaid class. The `to($userId)` method defines the Facebook user, you want to send the notification to.
 
-Based on the details you add (text, attachments etc.) will determine automatically the type of message to be sent. For example if you only add `text()` then it will be a basic message; using `attach()` will turn this into a attachment message. Having `buttons` or `cards` will cahneg this to the `Button Template` and `Generic Template` respectivily
+Based on the details you add (text, attachments etc.) will determine automatically the type of message to be sent. For example if you only add `text()` then it will be a basic message; using `attach()` will turn this into a attachment message. Having `buttons` or `cards` will chaneg this to the `Button Template` and `Generic Template` respectivily
 
 ``` php
 use NotificationChannels\Facebook\FacebookChannel;
@@ -101,6 +101,39 @@ The notification will be sent from your Facebook page, whose page token you have
 
 ![Laravel Facebook Notification Example](https://cloud.githubusercontent.com/assets/1915268/17666125/58d6b66c-631c-11e6-9380-0400832b2e48.png)
 
+#### Message Examples
+##### Basic Text Message
+Send a basic text message to a user
+```php
+return FacebookMessage::create('You have just paid your monthly fee! Thanks')
+->to($this->user->fb_messenger_id);
+```
+##### Attachment Message
+Send a file attachment to a user (Example is sending a pdf invoice)
+```php
+return FacebookMessage::create()
+->attach(AttachmentType::IMAGE, url('invoices/'.$this->invoice->id))
+->to($this->user->fb_messenger_id);
+```
+
+##### Generic (Card Carousel) Message
+Send a set fo cards / items to a user displayed in a corousel (Example is sending a set of links). Note you can also add up to three buttons per card
+```php
+return FacebookMessage::create()
+->cards([
+    Card::create('Card No.1 Title')
+    ->subtitle('An item description')
+    ->url('items/'.$this->item[0]->id)
+    ->image('items/'.$this->item[0]->id.'/image'),
+    Card::create('Card No.2 Title')
+    ->subtitle('An item description')
+    ->url('items/'.$this->item[1]->id)
+    ->image('items/'.$this->item[1]->id.'/image')
+    //could add buttons using ->buttons($array of Button)
+])
+->to($this->user->fb_messenger_id);
+```
+
 ### Routing a message
 
 You can either send the notification by providing with the page-scoped user id (PSID) of the recipient to the `to($userId)` method like shown in the above example or add a `routeNotificationForFacebook()` method in your notifiable model:
@@ -125,14 +158,14 @@ public function routeNotificationForFacebook()
 - `text('')`: (string) Notification message.
 - `attach($attachment_type, $url)`: (AttachmentType, string) An attachment type (IMAGE, AUDIO, VIDEO, FILE) and the url of this attachment
 - `buttons($buttons = [])`: (array) An array of "Call to Action" buttons (Created using `NotificationChannels\Facebook\Components\Button::create()`). You can add up to 3 buttons of one of the following types: `web_url`, `postback` or `phone_number`. See Button methods below for more details.
-- `cards($cards = [])`: (array) An array of item cards to be displayed in a carousel (Created using `NotificationChannels\Facebook\Components\Card::create()`). You can add up to 10 cards See Card methods below for more details.
+- `cards($cards = [])`: (array) An array of item cards to be displayed in a carousel (Created using `NotificationChannels\Facebook\Components\Card::create()`). You can add up to 10 cards. See Card methods below for more details.
 - `notificationType('')`: (string) Push Notification type: `REGULAR` will emit a sound/vibration and a phone notification; `SILENT_PUSH` will just emit a phone notification, `NO_PUSH` will not emit either. You can make use of `NotificationType::REGULAR`, `NotificationType::SILENT_PUSH` and `NotificationType::NO_PUSH` to make it easier to work with the type. This is an optional method, defaults to `REGULAR` type.
 
 ### Available Button methods
 
 - `title('')`: (string) Button Title.
 - `data('')`: (string) Button Data - It can be a web url, postback data or a formated phone number.
-- `type('')`: (string) Button Type - `web_url`, `postback` or `phone_number`. Use `ButtonType` enumerator for garunteeing valid values
+- `type('')`: (string) Button Type - `web_url`, `postback` or `phone_number`. Use `ButtonType` enumerator for guaranteeing valid values
 - `isTypeWebUrl()`: Helper method to create a `web_url` type button.
 - `isTypePhoneNumber()`: Helper method to create a `phone_number` type button.
 - `isTypePostback()`: Helper method to create a `postback` type button.
@@ -142,7 +175,7 @@ public function routeNotificationForFacebook()
 - `title('')`: (string) Card Title.
 - `subtitle('')`: (string) Card Subtitle.
 - `url('')`: (string) Card Item Url.
-- `image('')`: (string) Card Image Url. Image ratio hould be 1.91:1
+- `image('')`: (string) Card Image Url. Image ratio should be 1.91:1
 - `buttons($buttons = [])`: (array) An array of "Call to Action" buttons (Created using `NotificationChannels\Facebook\Components\Button::create()`). You can add up to 3 buttons of one of the following types: `web_url`, `postback` or `phone_number`. See Button methods above for more details.
 -
 ## Contributing
@@ -152,7 +185,6 @@ Please see [CONTRIBUTING](CONTRIBUTING.md) for details.
 ## Credits
 
 - [Syed Irfaq R.](https://github.com/irazasyed)
-- [David Piesse](https://github.com/davidpiesse)
 - [All Contributors](../../contributors)
 
 ## License

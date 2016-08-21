@@ -6,13 +6,15 @@ use NotificationChannels\Facebook\Exceptions\CouldNotCreateMessage;
 use NotificationChannels\Facebook\Exceptions\CouldNotSendNotification;
 use NotificationChannels\Facebook\Enums\AttachmentType;
 use NotificationChannels\Facebook\Enums\NotificationType;
+use NotificationChannels\Facebook\Traits\ButtonsTrait;
 
 /**
- * Class FacebookMessage
- * @package NotificationChannels\Facebook
+ * Class FacebookMessage.
  */
 class FacebookMessage implements \JsonSerializable
 {
+    use ButtonsTrait;
+
     /** @var string Recipient's ID. */
     public $recipient;
 
@@ -21,9 +23,6 @@ class FacebookMessage implements \JsonSerializable
 
     /** @var string Notification Type */
     public $notificationType = 'REGULAR';
-
-    /** @var array Call to Action Buttons */
-    public $buttons = [];
 
     /** @var array Generic Template Cards (items) */
     public $cards = [];
@@ -64,8 +63,9 @@ class FacebookMessage implements \JsonSerializable
      */
     public function __construct($text = '')
     {
-        if ($text != '')
+        if ($text != '') {
             $this->text($text);
+        }
     }
 
     /**
@@ -96,16 +96,18 @@ class FacebookMessage implements \JsonSerializable
      */
     public function text($text)
     {
-        if (!mb_strlen($text) > 320)
+        if (!mb_strlen($text) > 320) {
             $this->text = $text;
-        else
+        } else {
             throw CouldNotCreateMessage::textTooLong();
+        }
         $this->has_text = true;
+
         return $this;
     }
 
     /**
-     * Add Attachment
+     * Add Attachment.
      *
      * @param $attachment_type
      * @param $url
@@ -115,18 +117,22 @@ class FacebookMessage implements \JsonSerializable
      */
     public function attach($attachment_type, $url)
     {
-        if (in_array($attachment_type, [AttachmentType::FILE, AttachmentType::IMAGE,
-            AttachmentType::VIDEO, AttachmentType::AUDIO]))
+        $attachment_types = [AttachmentType::FILE, AttachmentType::IMAGE, AttachmentType::VIDEO, AttachmentType::AUDIO];
+        if (in_array($attachment_type, $attachment_types)) {
             $this->notificationType = $attachment_type;
-        else
+        } else {
             throw CouldNotCreateMessage::invalidAttachmentType();
+        }
 
-        if (isset($url))
+
+        if (isset($url)) {
             $this->attachment_url = $url;
-        else
+        } else {
             throw CouldNotCreateMessage::urlNotProvided();
+        }
 
         $this->has_attachment = true;
+
         return $this;
     }
 
@@ -140,6 +146,7 @@ class FacebookMessage implements \JsonSerializable
     public function notificationType($notificationType = 'REGULAR')
     {
         $this->notificationType = $notificationType;
+
         return $this;
     }
 
@@ -157,23 +164,7 @@ class FacebookMessage implements \JsonSerializable
             throw CouldNotCreateMessage::messageCardsLimitExceeded();
         }
         $this->cards = $cards;
-        return $this;
-    }
 
-    /**
-     * Add up to 3 call to action buttons.
-     *
-     * @param array $buttons
-     *
-     * @return $this
-     * @throws CouldNotSendNotification
-     */
-    public function buttons(array $buttons = [])
-    {
-        if (count($buttons) > 3) {
-            throw CouldNotCreateMessage::messageButtonsLimitExceeded();
-        }
-        $this->buttons = $buttons;
         return $this;
     }
 
@@ -198,19 +189,21 @@ class FacebookMessage implements \JsonSerializable
     }
 
     /**
-     * Returns message payload for JSON conversion
+     * Returns message payload for JSON conversion.
      * @throws CouldNotCreateMessage
      * @return array
      */
     public function toArray()
     {
-        if ($this->has_attachment)
+        if ($this->has_attachment) {
             return $this->attachmentMessageToArray();
+        }
         if ($this->has_text) {
             //check if has buttons
             if (count($this->buttons) > 0) {
                 return $this->buttonMessageToArray();
             }
+
             return $this->textMessageToArray();
         }
         if (count($this->cards) > 0) {
@@ -220,7 +213,7 @@ class FacebookMessage implements \JsonSerializable
     }
 
     /**
-     * Returns message for simple text message
+     * Returns message for simple text message.
      * @return array
      */
     protected function textMessageToArray()
@@ -229,11 +222,12 @@ class FacebookMessage implements \JsonSerializable
         $message['recipient'] = $this->recipient;
         $message['notification_type'] = $this->notificationType;
         $message['message']['text'] = $this->text;
+
         return $message;
     }
 
     /**
-     * Returns message for attachment message
+     * Returns message for attachment message.
      * @return array
      */
     protected function attachmentMessageToArray()
@@ -243,11 +237,12 @@ class FacebookMessage implements \JsonSerializable
         $message['notification_type'] = $this->notificationType;
         $message['message']['attachment']['type'] = $this->attachment_type;
         $message['message']['attachment']['payload']['url'] = $this->attachment_url;
+
         return $message;
     }
 
     /**
-     * Returns message for Generic Template message
+     * Returns message for Generic Template message.
      * @return array
      */
     protected function genericMessageToArray()
@@ -258,11 +253,12 @@ class FacebookMessage implements \JsonSerializable
         $message['message']['attachment']['type'] = 'template';
         $message['message']['attachment']['payload']['template_type'] = 'generic';
         $message['message']['attachment']['payload']['elements'] = $this->cards;
+
         return $message;
     }
 
     /**
-     * Returns message for Button Template message
+     * Returns message for Button Template message.
      * @return array
      */
     protected function buttonMessageToArray()
@@ -274,6 +270,7 @@ class FacebookMessage implements \JsonSerializable
         $message['message']['attachment']['payload']['template_type'] = 'button';
         $message['message']['attachment']['payload']['text'] = $this->text;
         $message['message']['attachment']['payload']['buttons'] = $this->buttons;
+
         return $message;
     }
 }
