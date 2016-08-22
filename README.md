@@ -63,7 +63,7 @@ Next we need to add this token to our Laravel configurations. Create a new Faceb
 Let's take an invoice-paid-notification as an example.
 You can now use the Facebook channel in your `via()` method, inside the InvoicePaid class. The `to($userId)` method defines the Facebook user, you want to send the notification to.
 
-Based on the details you add (text, attachments etc.) will determine automatically the type of message to be sent. For example if you only add `text()` then it will be a basic message; using `attach()` will turn this into a attachment message. Having `buttons` or `cards` will chaneg this to the `Button Template` and `Generic Template` respectivily
+Based on the details you add (text, attachments etc.) will determine automatically the type of message to be sent. For example if you only add `text()` then it will be a basic message; using `attach()` will turn this into a attachment message. Having `buttons` or `cards` will change this to the `Button Template` and `Generic Template` respectivily
 
 ``` php
 use NotificationChannels\Facebook\FacebookChannel;
@@ -112,12 +112,12 @@ return FacebookMessage::create('You have just paid your monthly fee! Thanks')
 Send a file attachment to a user (Example is sending a pdf invoice)
 ```php
 return FacebookMessage::create()
-->attach(AttachmentType::IMAGE, url('invoices/'.$this->invoice->id))
+->attach(AttachmentType::FILE, url('invoices/'.$this->invoice->id))
 ->to($this->user->fb_messenger_id);
 ```
 
 ##### Generic (Card Carousel) Message
-Send a set fo cards / items to a user displayed in a corousel (Example is sending a set of links). Note you can also add up to three buttons per card
+Send a set of cards / items to a user displayed in a carousel (Example is sending a set of links). Note you can also add up to three buttons per card
 ```php
 return FacebookMessage::create()
 ->cards([
