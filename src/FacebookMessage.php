@@ -2,10 +2,19 @@
 
 namespace NotificationChannels\Facebook;
 
+use NotificationChannels\Facebook\Exceptions\CouldNotCreateMessage;
 use NotificationChannels\Facebook\Exceptions\CouldNotSendNotification;
+use NotificationChannels\Facebook\Enums\AttachmentType;
+use NotificationChannels\Facebook\Enums\NotificationType;
+use NotificationChannels\Facebook\Traits\ButtonsTrait;
 
-class FacebookMessage
+/**
+ * Class FacebookMessage.
+ */
+class FacebookMessage implements \JsonSerializable
 {
+    use ButtonsTrait;
+
     /** @var string Recipient's ID. */
     public $recipient;
 
@@ -15,8 +24,29 @@ class FacebookMessage
     /** @var string Notification Type */
     public $notificationType = 'REGULAR';
 
-    /** @var array Call to Action Buttons */
-    public $buttons = [];
+    /** @var array Generic Template Cards (items) */
+    public $cards = [];
+
+    /** @var string Notification Type */
+    public $notification_type = NotificationType::REGULAR;
+
+    /** @var string Attachment Type
+     * Defaults to File
+     */
+    public $attachment_type = AttachmentType::FILE;
+
+    /** @var string Attachment URL */
+    public $attachment_url;
+
+    /**
+     * @var bool
+     */
+    protected $has_attachment = false;
+
+    /**
+     * @var bool
+     */
+    protected $has_text = false;
 
     /**
      * @param string $text
@@ -33,7 +63,9 @@ class FacebookMessage
      */
     public function __construct($text = '')
     {
-        $this->text($text);
+        if ($text != '') {
+            $this->text($text);
+        }
     }
 
     /**
@@ -58,12 +90,48 @@ class FacebookMessage
      * Notification text.
      *
      * @param $text
+     * @throws CouldNotCreateMessage
      *
      * @return $this
      */
     public function text($text)
     {
-        $this->text = $text;
+        if (!mb_strlen($text) > 320) {
+            $this->text = $text;
+        } else {
+            throw CouldNotCreateMessage::textTooLong();
+        }
+        $this->has_text = true;
+
+        return $this;
+    }
+
+    /**
+     * Add Attachment.
+     *
+     * @param $attachment_type
+     * @param $url
+     * @throws CouldNotCreateMessage
+     *
+     * @return $this
+     */
+    public function attach($attachment_type, $url)
+    {
+        $attachment_types = [AttachmentType::FILE, AttachmentType::IMAGE, AttachmentType::VIDEO, AttachmentType::AUDIO];
+        if (in_array($attachment_type, $attachment_types)) {
+            $this->notificationType = $attachment_type;
+        } else {
+            throw CouldNotCreateMessage::invalidAttachmentType();
+        }
+
+
+        if (isset($url)) {
+            $this->attachment_url = $url;
+        } else {
+            throw CouldNotCreateMessage::urlNotProvided();
+        }
+
+        $this->has_attachment = true;
 
         return $this;
     }
@@ -90,13 +158,12 @@ class FacebookMessage
      * @return $this
      * @throws CouldNotSendNotification
      */
-    public function buttons(array $buttons = [])
+    public function cards(array $cards = [])
     {
-        if (count($buttons) > 3) {
-            throw CouldNotSendNotification::messageButtonsLimitExceeded();
+        if (count($cards) > 10) {
+            throw CouldNotCreateMessage::messageCardsLimitExceeded();
         }
-
-        $this->buttons = $buttons;
+        $this->cards = $cards;
 
         return $this;
     }
@@ -108,39 +175,102 @@ class FacebookMessage
      */
     public function toNotGiven()
     {
-        return ! isset($this->recipient);
+        return !isset($this->recipient);
     }
 
     /**
-     * Returns message payload.
+     * Convert the object into something JSON serializable.
      *
+     * @return array
+     */
+    public function jsonSerialize()
+    {
+        return $this->toArray();
+    }
+
+    /**
+     * Returns message payload for JSON conversion.
+     * @throws CouldNotCreateMessage
      * @return array
      */
     public function toArray()
     {
-        $recipientType = 'id';
-        if (starts_with($this->recipient, '+')) {
-            $recipientType = 'phone_number';
+        if ($this->has_attachment) {
+            return $this->attachmentMessageToArray();
         }
+        if ($this->has_text) {
+            //check if has buttons
+            if (count($this->buttons) > 0) {
+                return $this->buttonMessageToArray();
+            }
 
-        $payload = [];
-        $payload['recipient'][$recipientType] = $this->recipient;
-        $payload['notification_type'] = $this->notificationType;
-
-        if (empty($this->buttons)) {
-            $payload['message']['text'] = $this->text;
-
-            return $payload;
+            return $this->textMessageToArray();
         }
+        if (count($this->cards) > 0) {
+            return $this->genericMessageToArray();
+        }
+        throw CouldNotCreateMessage::dataNotProvided();
+    }
 
-        $attachment = [];
-        $attachment['type'] = 'template';
-        $attachment['payload']['template_type'] = 'button';
-        $attachment['payload']['text'] = $this->text;
-        $attachment['payload']['buttons'] = $this->buttons;
+    /**
+     * Returns message for simple text message.
+     * @return array
+     */
+    protected function textMessageToArray()
+    {
+        $message = [];
+        $message['recipient'] = $this->recipient;
+        $message['notification_type'] = $this->notificationType;
+        $message['message']['text'] = $this->text;
 
-        $payload['message']['attachment'] = $attachment;
+        return $message;
+    }
 
-        return $payload;
+    /**
+     * Returns message for attachment message.
+     * @return array
+     */
+    protected function attachmentMessageToArray()
+    {
+        $message = [];
+        $message['recipient'] = $this->recipient;
+        $message['notification_type'] = $this->notificationType;
+        $message['message']['attachment']['type'] = $this->attachment_type;
+        $message['message']['attachment']['payload']['url'] = $this->attachment_url;
+
+        return $message;
+    }
+
+    /**
+     * Returns message for Generic Template message.
+     * @return array
+     */
+    protected function genericMessageToArray()
+    {
+        $message = [];
+        $message['recipient'] = $this->recipient;
+        $message['notification_type'] = $this->notificationType;
+        $message['message']['attachment']['type'] = 'template';
+        $message['message']['attachment']['payload']['template_type'] = 'generic';
+        $message['message']['attachment']['payload']['elements'] = $this->cards;
+
+        return $message;
+    }
+
+    /**
+     * Returns message for Button Template message.
+     * @return array
+     */
+    protected function buttonMessageToArray()
+    {
+        $message = [];
+        $message['recipient'] = $this->recipient;
+        $message['notification_type'] = $this->notificationType;
+        $message['message']['attachment']['type'] = 'template';
+        $message['message']['attachment']['payload']['template_type'] = 'button';
+        $message['message']['attachment']['payload']['text'] = $this->text;
+        $message['message']['attachment']['payload']['buttons'] = $this->buttons;
+
+        return $message;
     }
 }

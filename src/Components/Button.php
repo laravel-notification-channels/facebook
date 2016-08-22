@@ -1,8 +1,9 @@
 <?php
 
-namespace NotificationChannels\Facebook\Attachment;
+namespace NotificationChannels\Facebook\Components;
 
 use NotificationChannels\Facebook\Exceptions\CouldNotCreateButton;
+use NotificationChannels\Facebook\Enums\ButtonType;
 
 class Button implements \JsonSerializable
 {
@@ -15,30 +16,26 @@ class Button implements \JsonSerializable
     /** @var string Button Type */
     protected $type;
 
-    const TYPE_WEB_URL = 'web_url';
-    const TYPE_POSTBACK = 'postback';
-    const TYPE_PHONE_NUMBER = 'phone_number';
-
     /**
      * Create a button.
      *
-     * @param string       $title
+     * @param string $title
      * @param string|array $data
-     * @param string       $type
+     * @param string $type
      *
      * @return static
      */
-    public static function create($title = '', $data = null, $type = 'web_url')
+    public static function create($title = '', $data = null, $type = ButtonType::WEB_URL)
     {
         return new static($title, $data, $type);
     }
 
     /**
-     * @param string       $title
+     * @param string $title
      * @param string|array $data
-     * @param string       $type
+     * @param string $type
      */
-    public function __construct($title = '', $data = null, $type = 'web_url')
+    public function __construct($title = '', $data = null, $type = ButtonType::WEB_URL)
     {
         $this->title = $title;
         $this->data = $data;
@@ -95,19 +92,19 @@ class Button implements \JsonSerializable
      */
     public function isTypeWebUrl()
     {
-        $this->type = self::TYPE_WEB_URL;
+        $this->type = ButtonType::WEB_URL;
 
         return $this;
     }
 
     /**
-     * Set button type as postback..
+     * Set button type as postback.
      *
      * @return $this
      */
     public function isTypePostback()
     {
-        $this->type = self::TYPE_POSTBACK;
+        $this->type = ButtonType::POSTBACK;
 
         return $this;
     }
@@ -119,7 +116,7 @@ class Button implements \JsonSerializable
      */
     public function isTypePhoneNumber()
     {
-        $this->type = self::TYPE_PHONE_NUMBER;
+        $this->type = ButtonType::PHONE_NUMBER;
 
         return $this;
     }
@@ -147,25 +144,23 @@ class Button implements \JsonSerializable
         $payload = [];
         $payload['type'] = $this->type;
 
-        if (! isset($this->title)) {
+        if (!isset($this->title)) {
             throw CouldNotCreateButton::titleNotProvided();
         }
 
         $this->validateTitle();
         $payload['title'] = $this->title;
 
-        if ($this->isType(self::TYPE_WEB_URL)) {
-            if (! isset($this->data)) {
+        if ($this->isType(ButtonType::WEB_URL)) {
+            if (!isset($this->data)) {
                 throw CouldNotCreateButton::urlNotProvided();
             }
-
             $payload['url'] = $this->data;
         } else {
-            if (! isset($this->data)) {
+            if (!isset($this->data)) {
                 throw CouldNotCreateButton::dataNotProvided($this->type);
             }
-
-            if ($this->isType(self::TYPE_PHONE_NUMBER)) {
+            if ($this->isType(ButtonType::PHONE_NUMBER)) {
                 $this->validatePhoneNumber();
                 $payload['payload'] = $this->data;
             } else {
@@ -173,7 +168,6 @@ class Button implements \JsonSerializable
                 $this->validatePayload();
             }
         }
-
         return $payload;
     }
 
@@ -218,7 +212,7 @@ class Button implements \JsonSerializable
      */
     protected function validatePhoneNumber()
     {
-        if ($this->isType(self::TYPE_PHONE_NUMBER) && ! starts_with($this->data, '+')) {
+        if ($this->isType(ButtonType::PHONE_NUMBER) && !starts_with($this->data, '+')) {
             throw CouldNotCreateButton::invalidPhoneNumberProvided($this->data);
         }
     }
