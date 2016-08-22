@@ -62,7 +62,7 @@ class CouldNotCreateMessage extends \Exception
      */
     public static function dataNotProvided()
     {
-        return new static("Your message was missing critical information");
+        return new static('Your message was missing critical information');
     }
 
     /**

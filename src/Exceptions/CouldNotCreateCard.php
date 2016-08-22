@@ -41,5 +41,4 @@ class CouldNotCreateCard extends \Exception
             "Your subtitle was {$count} characters long, which exceeds the 80 character limit"
         );
     }
-
 }
