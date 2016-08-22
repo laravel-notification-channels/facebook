@@ -5,7 +5,6 @@ namespace NotificationChannels\Facebook\Components;
 use NotificationChannels\Facebook\Exceptions\CouldNotCreateCard;
 use NotificationChannels\Facebook\Traits\ButtonsTrait;
 
-
 class Card implements \JsonSerializable
 {
     use ButtonsTrait;
@@ -101,7 +100,6 @@ class Card implements \JsonSerializable
         return $this;
     }
 
-
     /**
      * Builds payload and returns an array.
      *
@@ -112,7 +110,7 @@ class Card implements \JsonSerializable
     {
         $payload = [];
 
-        if (!isset($this->title)) {
+        if (! isset($this->title)) {
             throw CouldNotCreateCard::titleNotProvided();
         }
         $payload['title'] = $this->title;
@@ -145,5 +143,4 @@ class Card implements \JsonSerializable
     {
         return $this->toArray();
     }
-
 }

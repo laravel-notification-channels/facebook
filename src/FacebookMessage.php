@@ -96,7 +96,7 @@ class FacebookMessage implements \JsonSerializable
      */
     public function text($text)
     {
-        if (!mb_strlen($text) > 320) {
+        if (! mb_strlen($text) > 320) {
             $this->text = $text;
         } else {
             throw CouldNotCreateMessage::textTooLong();
@@ -175,7 +175,7 @@ class FacebookMessage implements \JsonSerializable
      */
     public function toNotGiven()
     {
-        return !isset($this->recipient);
+        return ! isset($this->recipient);
     }
 
     /**
