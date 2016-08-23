@@ -151,12 +151,12 @@ class FacebookMessage implements \JsonSerializable
     }
 
     /**
-     * Add up to 3 call to action buttons.
+     * Add up to 10 cards to be displayed in a carousel.
      *
-     * @param array $buttons
+     * @param array $cards
      *
      * @return $this
-     * @throws CouldNotSendNotification
+     * @throws CouldNotCreateMessage
      */
     public function cards(array $cards = [])
     {
