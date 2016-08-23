@@ -6,6 +6,9 @@ use NotificationChannels\Facebook\Exceptions\CouldNotCreateMessage;
 
 trait HasButtons
 {
+    /** @var array Call to Action Buttons */
+    protected $buttons = [];
+
     /**
      * Add up to 3 call to action buttons.
      *
@@ -20,7 +23,7 @@ trait HasButtons
             throw CouldNotCreateMessage::messageButtonsLimitExceeded();
         }
 
-        $this->payload['buttons'] = $buttons;
+        $this->buttons = $buttons;
 
         return $this;
     }

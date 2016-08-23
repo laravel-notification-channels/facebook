@@ -114,6 +114,10 @@ class Card implements \JsonSerializable
             throw CouldNotCreateCard::titleNotProvided();
         }
 
+        if (count($this->buttons) > 0) {
+            $this->payload['buttons'] = $this->buttons;
+        }
+
         return $this->payload;
     }
 
