@@ -177,7 +177,7 @@ public function routeNotificationForFacebook()
 - `url('')`: (string) Card Item Url.
 - `image('')`: (string) Card Image Url. Image ratio should be 1.91:1
 - `buttons($buttons = [])`: (array) An array of "Call to Action" buttons (Created using `NotificationChannels\Facebook\Components\Button::create()`). You can add up to 3 buttons of one of the following types: `web_url`, `postback` or `phone_number`. See Button methods above for more details.
--
+
 ## Contributing
 
 Please see [CONTRIBUTING](CONTRIBUTING.md) for details.
