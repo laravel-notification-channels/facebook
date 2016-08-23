@@ -113,14 +113,14 @@ class FacebookMessage implements \JsonSerializable
             AttachmentType::FILE,
             AttachmentType::IMAGE,
             AttachmentType::VIDEO,
-            AttachmentType::AUDIO
+            AttachmentType::AUDIO,
         ];
 
-        if (!in_array($attachmentType, $attachmentTypes)) {
+        if (! in_array($attachmentType, $attachmentTypes)) {
             throw CouldNotCreateMessage::invalidAttachmentType();
         }
 
-        if (!isset($url)) {
+        if (! isset($url)) {
             throw CouldNotCreateMessage::urlNotProvided();
         }
 
@@ -171,7 +171,7 @@ class FacebookMessage implements \JsonSerializable
      */
     public function toNotGiven()
     {
-        return !isset($this->recipient);
+        return ! isset($this->recipient);
     }
 
     /**
