@@ -10,6 +10,11 @@ class FacebookChannel
     /** @var Facebook */
     private $fb;
 
+    /**
+     * FacebookChannel constructor.
+     *
+     * @param Facebook $fb
+     */
     public function __construct(Facebook $fb)
     {
         $this->fb = $fb;
