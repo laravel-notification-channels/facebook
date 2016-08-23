@@ -5,14 +5,14 @@ namespace NotificationChannels\Facebook;
 use NotificationChannels\Facebook\Exceptions\CouldNotCreateMessage;
 use NotificationChannels\Facebook\Enums\AttachmentType;
 use NotificationChannels\Facebook\Enums\NotificationType;
-use NotificationChannels\Facebook\Traits\ButtonsTrait;
+use NotificationChannels\Facebook\Traits\HasButtons;
 
 /**
  * Class FacebookMessage.
  */
 class FacebookMessage implements \JsonSerializable
 {
-    use ButtonsTrait;
+    use HasButtons;
 
     /** @var string Recipient's ID. */
     public $recipient;
