@@ -21,31 +21,22 @@ class FacebookMessage implements \JsonSerializable
     public $text;
 
     /** @var string Notification Type */
-    public $notificationType = 'REGULAR';
+    public $notificationType = NotificationType::REGULAR;
 
     /** @var array Generic Template Cards (items) */
     public $cards = [];
 
-    /** @var string Notification Type */
-    public $notification_type = NotificationType::REGULAR;
-
-    /** @var string Attachment Type
-     * Defaults to File
-     */
-    public $attachment_type = AttachmentType::FILE;
+    /** @var string Attachment Type. Defaults to File */
+    public $attachmentType = AttachmentType::FILE;
 
     /** @var string Attachment URL */
-    public $attachment_url;
+    public $attachmentUrl;
 
-    /**
-     * @var bool
-     */
-    protected $has_attachment = false;
+    /** @var bool */
+    protected $hasAttachment = false;
 
-    /**
-     * @var bool
-     */
-    protected $has_text = false;
+    /** @var bool */
+    protected $hasText = false;
 
     /**
      * @param string $text
@@ -89,18 +80,19 @@ class FacebookMessage implements \JsonSerializable
      * Notification text.
      *
      * @param $text
+     *
      * @throws CouldNotCreateMessage
      *
      * @return $this
      */
     public function text($text)
     {
-        if (! mb_strlen($text) > 320) {
-            $this->text = $text;
-        } else {
+        if (mb_strlen($text) > 320) {
             throw CouldNotCreateMessage::textTooLong();
         }
-        $this->has_text = true;
+
+        $this->text = $text;
+        $this->hasText = true;
 
         return $this;
     }
@@ -108,29 +100,33 @@ class FacebookMessage implements \JsonSerializable
     /**
      * Add Attachment.
      *
-     * @param $attachment_type
+     * @param $attachmentType
      * @param $url
+     *
      * @throws CouldNotCreateMessage
      *
      * @return $this
      */
-    public function attach($attachment_type, $url)
+    public function attach($attachmentType, $url)
     {
-        $attachment_types = [AttachmentType::FILE, AttachmentType::IMAGE, AttachmentType::VIDEO, AttachmentType::AUDIO];
-        if (in_array($attachment_type, $attachment_types)) {
-            $this->notificationType = $attachment_type;
-        } else {
+        $attachmentTypes = [
+            AttachmentType::FILE,
+            AttachmentType::IMAGE,
+            AttachmentType::VIDEO,
+            AttachmentType::AUDIO
+        ];
+
+        if (!in_array($attachmentType, $attachmentTypes)) {
             throw CouldNotCreateMessage::invalidAttachmentType();
         }
 
-
-        if (isset($url)) {
-            $this->attachment_url = $url;
-        } else {
+        if (!isset($url)) {
             throw CouldNotCreateMessage::urlNotProvided();
         }
 
-        $this->has_attachment = true;
+        $this->notificationType = $attachmentType;
+        $this->attachmentUrl = $url;
+        $this->hasAttachment = true;
 
         return $this;
     }
@@ -142,7 +138,7 @@ class FacebookMessage implements \JsonSerializable
      *
      * @return $this
      */
-    public function notificationType($notificationType = 'REGULAR')
+    public function notificationType($notificationType)
     {
         $this->notificationType = $notificationType;
 
@@ -162,6 +158,7 @@ class FacebookMessage implements \JsonSerializable
         if (count($cards) > 10) {
             throw CouldNotCreateMessage::messageCardsLimitExceeded();
         }
+
         $this->cards = $cards;
 
         return $this;
@@ -174,7 +171,7 @@ class FacebookMessage implements \JsonSerializable
      */
     public function toNotGiven()
     {
-        return ! isset($this->recipient);
+        return !isset($this->recipient);
     }
 
     /**
@@ -189,15 +186,17 @@ class FacebookMessage implements \JsonSerializable
 
     /**
      * Returns message payload for JSON conversion.
+     *
      * @throws CouldNotCreateMessage
      * @return array
      */
     public function toArray()
     {
-        if ($this->has_attachment) {
+        if ($this->hasAttachment) {
             return $this->attachmentMessageToArray();
         }
-        if ($this->has_text) {
+
+        if ($this->hasText) {
             //check if has buttons
             if (count($this->buttons) > 0) {
                 return $this->buttonMessageToArray();
@@ -205,14 +204,17 @@ class FacebookMessage implements \JsonSerializable
 
             return $this->textMessageToArray();
         }
+
         if (count($this->cards) > 0) {
             return $this->genericMessageToArray();
         }
+        
         throw CouldNotCreateMessage::dataNotProvided();
     }
 
     /**
      * Returns message for simple text message.
+     *
      * @return array
      */
     protected function textMessageToArray()
@@ -227,6 +229,7 @@ class FacebookMessage implements \JsonSerializable
 
     /**
      * Returns message for attachment message.
+     *
      * @return array
      */
     protected function attachmentMessageToArray()
@@ -234,14 +237,15 @@ class FacebookMessage implements \JsonSerializable
         $message = [];
         $message['recipient'] = $this->recipient;
         $message['notification_type'] = $this->notificationType;
-        $message['message']['attachment']['type'] = $this->attachment_type;
-        $message['message']['attachment']['payload']['url'] = $this->attachment_url;
+        $message['message']['attachment']['type'] = $this->attachmentType;
+        $message['message']['attachment']['payload']['url'] = $this->attachmentUrl;
 
         return $message;
     }
 
     /**
      * Returns message for Generic Template message.
+     *
      * @return array
      */
     protected function genericMessageToArray()
@@ -258,6 +262,7 @@ class FacebookMessage implements \JsonSerializable
 
     /**
      * Returns message for Button Template message.
+     *
      * @return array
      */
     protected function buttonMessageToArray()
