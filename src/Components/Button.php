@@ -213,7 +213,7 @@ class Button implements \JsonSerializable
      */
     protected function validatePhoneNumber()
     {
-        if ($this->isType(ButtonType::PHONE_NUMBER) && ! starts_with($this->data, '+')) {
+        if ($this->isType(ButtonType::PHONE_NUMBER) && is_string($this->data) && ! starts_with($this->data, '+')) {
             throw CouldNotCreateButton::invalidPhoneNumberProvided($this->data);
         }
     }
