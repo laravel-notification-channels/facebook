@@ -7,9 +7,7 @@ use NotificationChannels\Facebook\Exceptions\CouldNotCreateMessage;
 
 class FacebookChannel
 {
-    /**
-     * @var Facebook
-     */
+    /** @var Facebook */
     private $fb;
 
     public function __construct(Facebook $fb)

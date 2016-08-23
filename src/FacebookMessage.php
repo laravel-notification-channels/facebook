@@ -208,7 +208,7 @@ class FacebookMessage implements \JsonSerializable
         if (count($this->cards) > 0) {
             return $this->genericMessageToArray();
         }
-        
+
         throw CouldNotCreateMessage::dataNotProvided();
     }
 
