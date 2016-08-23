@@ -2,27 +2,20 @@
 
 namespace NotificationChannels\Facebook\Components;
 
+use NotificationChannels\Facebook\Traits\HasButtons;
 use NotificationChannels\Facebook\Exceptions\CouldNotCreateCard;
-use NotificationChannels\Facebook\Traits\ButtonsTrait;
 
 class Card implements \JsonSerializable
 {
-    use ButtonsTrait;
+    use HasButtons;
 
-    /** @var string Card Title */
-    protected $title;
-
-    /** @var string Item Url */
-    protected $image_url;
-
-    /** @var string Image Url */
-    protected $item_url;
-
-    /** @var string Subtitle */
-    protected $subtitle;
+    /** @var array Payload */
+    protected $payload = [];
 
     /**
      * Create a Card.
+     *
+     * @param string $title
      *
      * @return static
      */
@@ -33,6 +26,10 @@ class Card implements \JsonSerializable
 
     /**
      * Create Card constructor.
+     *
+     * @param string $title
+     *
+     * @throws CouldNotCreateCard
      */
     public function __construct($title = '')
     {
@@ -43,15 +40,17 @@ class Card implements \JsonSerializable
      * Set Button Title.
      *
      * @param $title
+     *
      * @throws CouldNotCreateCard
      * @return $this
      */
     public function title($title)
     {
         if (mb_strlen($title) > 80) {
-            throw CouldNotCreateCard::titleLimitExceeded($this->title);
+            throw CouldNotCreateCard::titleLimitExceeded($title);
         }
-        $this->title = $title;
+
+        $this->payload['title'] = $title;
 
         return $this;
     }
@@ -59,12 +58,13 @@ class Card implements \JsonSerializable
     /**
      * Set Card Item Url.
      *
-     * @param $item_url
+     * @param $itemUrl
+     *
      * @return $this
      */
-    public function url($item_url)
+    public function url($itemUrl)
     {
-        $this->item_url = $item_url;
+        $this->payload['item_url'] = $itemUrl;
 
         return $this;
     }
@@ -72,13 +72,13 @@ class Card implements \JsonSerializable
     /**
      * Set Card Image Url.
      *
-     * @param $image_url
-     * Image ration should be 1.91:1
+     * @param $imageUrl Image ration should be 1.91:1
+     *
      * @return $this
      */
-    public function image($image_url)
+    public function image($imageUrl)
     {
-        $this->image_url = $image_url;
+        $this->payload['image_url'] = $imageUrl;
 
         return $this;
     }
@@ -87,51 +87,34 @@ class Card implements \JsonSerializable
      * Set Card Subtitle.
      *
      * @param $subtitle
+     *
      * @throws CouldNotCreateCard
      * @return $this
      */
     public function subtitle($subtitle)
     {
         if (mb_strlen($subtitle) > 80) {
-            throw CouldNotCreateCard::subtitleLimitExceeded($this->title);
+            throw CouldNotCreateCard::subtitleLimitExceeded($subtitle);
         }
-        $this->subtitle = $subtitle;
+
+        $this->payload['subtitle'] = $subtitle;
 
         return $this;
     }
 
     /**
-     * Builds payload and returns an array.
+     * Returns a payload for API request.
      *
      * @return array
      * @throws CouldNotCreateCard
      */
     public function toArray()
     {
-        $payload = [];
-
-        if (! isset($this->title)) {
+        if (!isset($this->payload['title'])) {
             throw CouldNotCreateCard::titleNotProvided();
         }
-        $payload['title'] = $this->title;
 
-        if (isset($this->item_url)) {
-            $payload['item_url'] = $this->item_url;
-        }
-
-        if (isset($this->image_url)) {
-            $payload['image_url'] = $this->image_url;
-        }
-
-        if (isset($this->subtitle)) {
-            $payload['subtitle'] = $this->subtitle;
-        }
-
-        if (count($this->buttons) > 0) {
-            $payload['buttons'] = $this->buttons;
-        }
-
-        return $payload;
+        return $this->payload;
     }
 
     /**
