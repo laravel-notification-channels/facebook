@@ -3,7 +3,6 @@
 namespace NotificationChannels\Facebook;
 
 use NotificationChannels\Facebook\Exceptions\CouldNotCreateMessage;
-use NotificationChannels\Facebook\Exceptions\CouldNotSendNotification;
 use NotificationChannels\Facebook\Enums\AttachmentType;
 use NotificationChannels\Facebook\Enums\NotificationType;
 use NotificationChannels\Facebook\Traits\ButtonsTrait;
