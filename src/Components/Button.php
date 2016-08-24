@@ -2,26 +2,29 @@
 
 namespace NotificationChannels\Facebook\Components;
 
-use NotificationChannels\Facebook\Exceptions\CouldNotCreateButton;
 use NotificationChannels\Facebook\Enums\ButtonType;
+use NotificationChannels\Facebook\Exceptions\CouldNotCreateButton;
 
 class Button implements \JsonSerializable
 {
     /** @var string Button Title */
     protected $title;
 
+    /** @var string Button Type */
+    protected $type;
+
     /** @var string|array Button URL, Postback Data or Phone Number */
     protected $data;
 
-    /** @var string Button Type */
-    protected $type;
+    /** @var array Payload */
+    protected $payload = [];
 
     /**
      * Create a button.
      *
-     * @param string $title
+     * @param string       $title
      * @param string|array $data
-     * @param string $type
+     * @param string       $type
      *
      * @return static
      */
@@ -31,15 +34,17 @@ class Button implements \JsonSerializable
     }
 
     /**
-     * @param string $title
+     * Button Constructor.
+     *
+     * @param string       $title
      * @param string|array $data
-     * @param string $type
+     * @param string       $type
      */
     public function __construct($title = '', $data = null, $type = ButtonType::WEB_URL)
     {
         $this->title = $title;
         $this->data = $data;
-        $this->type = $type;
+        $this->payload['type'] = $type;
     }
 
     /**
@@ -48,25 +53,79 @@ class Button implements \JsonSerializable
      * @param $title
      *
      * @return $this
+     * @throws CouldNotCreateButton
      */
     public function title($title)
     {
-        $this->title = $title;
+        if ($this->isNotSetOrEmpty($title)) {
+            throw CouldNotCreateButton::titleNotProvided();
+        } elseif (mb_strlen($title) > 20) {
+            throw CouldNotCreateButton::titleLimitExceeded($title);
+        }
+
+        $this->payload['title'] = $title;
 
         return $this;
     }
 
     /**
-     * Set Button Data.
-     * Could be url, postback or phone number.
+     * Set a URL for the button.
      *
-     * @param mixed $data
+     * @param $url
      *
      * @return $this
+     * @throws CouldNotCreateButton
      */
-    public function data($data)
+    public function url($url)
     {
-        $this->data = $data;
+        if ($this->isNotSetOrEmpty($url)) {
+            throw CouldNotCreateButton::urlNotProvided();
+        } elseif (!filter_var($url, FILTER_VALIDATE_URL)) {
+            throw CouldNotCreateButton::invalidUrlProvided($url);
+        }
+
+        $this->payload['url'] = $url;
+        $this->isTypeWebUrl();
+
+        return $this;
+    }
+
+    /**
+     * @param $phone
+     *
+     * @return $this
+     * @throws CouldNotCreateButton
+     */
+    public function phone($phone)
+    {
+        if ($this->isNotSetOrEmpty($phone)) {
+            throw CouldNotCreateButton::phoneNumberNotProvided();
+        } elseif (is_string($phone) && !starts_with($phone, '+')) {
+            throw CouldNotCreateButton::invalidPhoneNumberProvided($phone);
+        }
+
+        $this->payload['payload'] = $phone;
+        $this->isTypePhoneNumber();
+
+        return $this;
+    }
+
+    /**
+     * @param $postback
+     *
+     * @return $this
+     * @throws CouldNotCreateButton
+     */
+    public function postback($postback)
+    {
+        if ($this->isNotSetOrEmpty($postback)) {
+            throw CouldNotCreateButton::postbackNotProvided();
+        } elseif (!is_array($postback)) {
+            throw CouldNotCreateButton::invalidPostbackProvided($postback);
+        }
+
+        $this->payload['payload'] = json_encode($postback);
+        $this->isTypePostback();
 
         return $this;
     }
@@ -80,7 +139,7 @@ class Button implements \JsonSerializable
      */
     public function type($type)
     {
-        $this->type = $type;
+        $this->payload['type'] = $type;
 
         return $this;
     }
@@ -92,7 +151,7 @@ class Button implements \JsonSerializable
      */
     public function isTypeWebUrl()
     {
-        $this->type = ButtonType::WEB_URL;
+        $this->payload['type'] = ButtonType::WEB_URL;
 
         return $this;
     }
@@ -104,7 +163,7 @@ class Button implements \JsonSerializable
      */
     public function isTypePostback()
     {
-        $this->type = ButtonType::POSTBACK;
+        $this->payload['type'] = ButtonType::POSTBACK;
 
         return $this;
     }
@@ -116,7 +175,7 @@ class Button implements \JsonSerializable
      */
     public function isTypePhoneNumber()
     {
-        $this->type = ButtonType::PHONE_NUMBER;
+        $this->payload['type'] = ButtonType::PHONE_NUMBER;
 
         return $this;
     }
@@ -130,7 +189,40 @@ class Button implements \JsonSerializable
      */
     protected function isType($type)
     {
-        return $this->type === $type;
+        return isset($this->payload['type']) && $type === $this->payload['type'];
+    }
+
+    /**
+     * Make payload by data and type.
+     *
+     * @param mixed $data
+     *
+     * @return $this
+     * @throws CouldNotCreateButton
+     */
+    protected function makePayload($data)
+    {
+        if ($this->isNotSetOrEmpty($data)) {
+            return $this;
+        }
+
+        switch ($this->payload['type']) {
+            case ButtonType::WEB_URL:
+                $this->url($data);
+                break;
+            case ButtonType::PHONE_NUMBER:
+                $this->phone($data);
+                break;
+            case ButtonType::POSTBACK:
+                $this->postback($data);
+                break;
+        }
+
+        if (isset($this->payload['payload']) && mb_strlen($this->payload['payload']) > 1000) {
+            throw CouldNotCreateButton::payloadLimitExceeded($this->payload['payload']);
+        }
+
+        return $this;
     }
 
     /**
@@ -141,35 +233,10 @@ class Button implements \JsonSerializable
      */
     public function toArray()
     {
-        $payload = [];
-        $payload['type'] = $this->type;
+        $this->title($this->title);
+        $this->makePayload($this->data);
 
-        if (! isset($this->title)) {
-            throw CouldNotCreateButton::titleNotProvided();
-        }
-
-        $this->validateTitle();
-        $payload['title'] = $this->title;
-
-        if ($this->isType(ButtonType::WEB_URL)) {
-            if (! isset($this->data)) {
-                throw CouldNotCreateButton::urlNotProvided();
-            }
-            $payload['url'] = $this->data;
-        } else {
-            if (! isset($this->data)) {
-                throw CouldNotCreateButton::dataNotProvided($this->type);
-            }
-            if ($this->isType(ButtonType::PHONE_NUMBER)) {
-                $this->validatePhoneNumber();
-                $payload['payload'] = $this->data;
-            } else {
-                $payload['payload'] = $this->data = json_encode($this->data);
-                $this->validatePayload();
-            }
-        }
-
-        return $payload;
+        return $this->payload;
     }
 
     /**
@@ -183,38 +250,14 @@ class Button implements \JsonSerializable
     }
 
     /**
-     * Validate Title.
+     * Determine if it's not set or is empty.
      *
-     * @throws CouldNotCreateButton
-     */
-    protected function validateTitle()
-    {
-        if (mb_strlen($this->title) > 20) {
-            throw CouldNotCreateButton::titleLimitExceeded($this->title);
-        }
-    }
-
-    /**
-     * Validate Payload.
+     * @param $var
      *
-     * @throws CouldNotCreateButton
+     * @return bool
      */
-    protected function validatePayload()
+    protected function isNotSetOrEmpty($var)
     {
-        if (mb_strlen($this->data) > 1000) {
-            throw CouldNotCreateButton::payloadLimitExceeded($this->data);
-        }
-    }
-
-    /**
-     * Validate Phone Number.
-     *
-     * @throws CouldNotCreateButton
-     */
-    protected function validatePhoneNumber()
-    {
-        if ($this->isType(ButtonType::PHONE_NUMBER) && is_string($this->data) && ! starts_with($this->data, '+')) {
-            throw CouldNotCreateButton::invalidPhoneNumberProvided($this->data);
-        }
+        return !isset($var) || empty($var);
     }
 }
