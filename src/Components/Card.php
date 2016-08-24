@@ -33,7 +33,9 @@ class Card implements \JsonSerializable
      */
     public function __construct($title = '')
     {
-        $this->title($title);
+        if ($title !== '') {
+            $this->title($title);
+        }
     }
 
     /**
@@ -110,7 +112,7 @@ class Card implements \JsonSerializable
      */
     public function toArray()
     {
-        if (! isset($this->payload['title'])) {
+        if (!isset($this->payload['title'])) {
             throw CouldNotCreateCard::titleNotProvided();
         }
 
