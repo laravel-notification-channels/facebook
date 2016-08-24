@@ -25,6 +25,26 @@ class CouldNotCreateButton extends \Exception
     }
 
     /**
+     * Thrown when the button type is "phone_number" but the number is not provided.
+     *
+     * @return static
+     */
+    public static function phoneNumberNotProvided()
+    {
+        return new static('Your button type is `phone_number` but the phone number is not provided.');
+    }
+
+    /**
+     * Thrown when the button type is "postback" but the postback data is not provided.
+     *
+     * @return static
+     */
+    public static function postbackNotProvided()
+    {
+        return new static('Your button type is `postback` but the postback data is not provided.');
+    }
+
+    /**
      * Thrown when the button type is "postback" or "phone_number",
      * but the data value is not provided for the payload.
      *
@@ -39,6 +59,8 @@ class CouldNotCreateButton extends \Exception
 
     /**
      * Thrown when the title characters limit is exceeded.
+     *
+     * @param $title
      *
      * @return static
      */
@@ -68,6 +90,18 @@ class CouldNotCreateButton extends \Exception
     }
 
     /**
+     * Thrown when the URL provided is not valid.
+     *
+     * @param $url
+     *
+     * @return static
+     */
+    public static function invalidUrlProvided($url)
+    {
+        return new static("`{$url}` is not a valid URL. Please check and provide a valid URL");
+    }
+
+    /**
      * Thrown when the phone number provided is of invalid format.
      *
      * @param $phoneNumber
@@ -81,5 +115,17 @@ class CouldNotCreateButton extends \Exception
             "Format must be '+' prefix followed by the country code, area code and local number.".
             'Please check the button template docs for more information.'
         );
+    }
+
+    /**
+     * Thrown when the postback is not valid.
+     *
+     * @param $postback
+     *
+     * @return static
+     */
+    public static function invalidPostbackProvided($postback)
+    {
+        return new static("`{$postback}` is not a valid value for the `postback` button type. It should be an array.");
     }
 }
