@@ -80,7 +80,7 @@ class Button implements \JsonSerializable
     {
         if ($this->isNotSetOrEmpty($url)) {
             throw CouldNotCreateButton::urlNotProvided();
-        } elseif (!filter_var($url, FILTER_VALIDATE_URL)) {
+        } elseif (! filter_var($url, FILTER_VALIDATE_URL)) {
             throw CouldNotCreateButton::invalidUrlProvided($url);
         }
 
@@ -100,7 +100,7 @@ class Button implements \JsonSerializable
     {
         if ($this->isNotSetOrEmpty($phone)) {
             throw CouldNotCreateButton::phoneNumberNotProvided();
-        } elseif (is_string($phone) && !starts_with($phone, '+')) {
+        } elseif (is_string($phone) && ! starts_with($phone, '+')) {
             throw CouldNotCreateButton::invalidPhoneNumberProvided($phone);
         }
 
@@ -120,7 +120,7 @@ class Button implements \JsonSerializable
     {
         if ($this->isNotSetOrEmpty($postback)) {
             throw CouldNotCreateButton::postbackNotProvided();
-        } elseif (!is_array($postback)) {
+        } elseif (! is_array($postback)) {
             throw CouldNotCreateButton::invalidPostbackProvided($postback);
         }
 
@@ -258,6 +258,6 @@ class Button implements \JsonSerializable
      */
     protected function isNotSetOrEmpty($var)
     {
-        return !isset($var) || empty($var);
+        return ! isset($var) || empty($var);
     }
 }

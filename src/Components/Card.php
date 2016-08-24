@@ -112,7 +112,7 @@ class Card implements \JsonSerializable
      */
     public function toArray()
     {
-        if (!isset($this->payload['title'])) {
+        if (! isset($this->payload['title'])) {
             throw CouldNotCreateCard::titleNotProvided();
         }
 
