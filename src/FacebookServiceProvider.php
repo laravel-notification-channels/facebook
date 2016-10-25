@@ -19,4 +19,11 @@ class FacebookServiceProvider extends ServiceProvider
                 return new Facebook($pageToken);
             });
     }
+
+    /**
+     * Register any package services.
+     */
+    public function register()
+    {
+    }
 }
