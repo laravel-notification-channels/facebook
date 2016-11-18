@@ -124,7 +124,7 @@ class FacebookMessage implements \JsonSerializable
             throw CouldNotCreateMessage::urlNotProvided();
         }
 
-        $this->notificationType = $attachmentType;
+        $this->attachmentType = $attachmentType;
         $this->attachmentUrl = $url;
         $this->hasAttachment = true;
 
