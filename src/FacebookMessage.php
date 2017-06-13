@@ -2,10 +2,10 @@
 
 namespace NotificationChannels\Facebook;
 
-use NotificationChannels\Facebook\Exceptions\CouldNotCreateMessage;
+use NotificationChannels\Facebook\Traits\HasButtons;
 use NotificationChannels\Facebook\Enums\AttachmentType;
 use NotificationChannels\Facebook\Enums\NotificationType;
-use NotificationChannels\Facebook\Traits\HasButtons;
+use NotificationChannels\Facebook\Exceptions\CouldNotCreateMessage;
 
 /**
  * Class FacebookMessage.
