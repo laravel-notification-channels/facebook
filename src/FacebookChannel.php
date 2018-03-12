@@ -2,6 +2,7 @@
 
 namespace NotificationChannels\Facebook;
 
+use Illuminate\Container\Container;
 use Illuminate\Notifications\Notification;
 use NotificationChannels\Facebook\Exceptions\CouldNotCreateMessage;
 
@@ -45,7 +46,7 @@ class FacebookChannel
         }
 
         if ($message->senderGiven()) {
-            $this->fb = new Facebook($message->sender);
+            $this->fb = Container::getInstance()->make(Facebook::class, ['token' => $message->sender]);
         }
 
         $this->fb->send($message->toArray());
