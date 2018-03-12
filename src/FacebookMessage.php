@@ -74,7 +74,7 @@ class FacebookMessage implements \JsonSerializable
      */
     public function to($recipient)
     {
-        $this->recipient = $recipient;
+        $this->recipient = is_array($recipient) ? $recipient : ['id' => $recipient];
 
         return $this;
     }
