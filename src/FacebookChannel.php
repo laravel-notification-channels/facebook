@@ -44,6 +44,10 @@ class FacebookChannel
             $message->to($to);
         }
 
+        if ($message->senderGiven()) {
+            $this->fb = new Facebook($message->sender);
+        }
+
         $this->fb->send($message->toArray());
     }
 }

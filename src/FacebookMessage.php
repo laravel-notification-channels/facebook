@@ -17,6 +17,9 @@ class FacebookMessage implements \JsonSerializable
     /** @var string Recipient's ID. */
     public $recipient;
 
+    /** @var string Sender's Page Token. */
+    public $sender;
+
     /** @var string Notification Text. */
     public $text;
 
@@ -72,6 +75,20 @@ class FacebookMessage implements \JsonSerializable
     public function to($recipient)
     {
         $this->recipient = $recipient;
+
+        return $this;
+    }
+
+    /**
+     * Sender's facebook page token.
+     *
+     * @param $recipient page token of the sender
+     *
+     * @return $this
+     */
+    public function from($sender)
+    {
+        $this->sender = $sender;
 
         return $this;
     }
@@ -172,6 +189,16 @@ class FacebookMessage implements \JsonSerializable
     public function toNotGiven()
     {
         return ! isset($this->recipient);
+    }
+
+    /**
+     * Determine if a custom sender is given.
+     *
+     * @return bool
+     */
+    public function senderGiven()
+    {
+        return isset($this->sender);
     }
 
     /**
