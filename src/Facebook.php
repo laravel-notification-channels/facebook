@@ -4,22 +4,30 @@ namespace NotificationChannels\Facebook;
 
 use Exception;
 use GuzzleHttp\Client as HttpClient;
+use Psr\Http\Message\ResponseInterface;
 use GuzzleHttp\Exception\ClientException;
+use GuzzleHttp\Exception\GuzzleException;
 use NotificationChannels\Facebook\Exceptions\CouldNotSendNotification;
 
+/**
+ * Class Facebook
+ */
 class Facebook
 {
     /** @var HttpClient HTTP Client */
     protected $http;
 
-    /** @var null|string Page Token. */
-    protected $token = null;
+    /** @var string|null Page Token. */
+    protected $token;
+
+    /** @var string Default Graph API Version */
+    protected $graphApiVersion = '4.0';
 
     /**
-     * @param null            $token
-     * @param HttpClient|null $httpClient
+     * @param  string|null      $token
+     * @param  HttpClient|null  $httpClient
      */
-    public function __construct($token = null, HttpClient $httpClient = null)
+    public function __construct(string $token = null, HttpClient $httpClient = null)
     {
         $this->token = $token;
 
@@ -27,45 +35,65 @@ class Facebook
     }
 
     /**
+     * Set Default Graph API Version.
+     *
+     * @param $graphApiVersion
+     *
+     * @return Facebook
+     */
+    public function setGraphApiVersion($graphApiVersion): Facebook
+    {
+        $this->graphApiVersion = $graphApiVersion;
+
+        return $this;
+    }
+
+    /**
      * Get HttpClient.
      *
      * @return HttpClient
      */
-    protected function httpClient()
+    protected function httpClient(): HttpClient
     {
-        return $this->http ?: $this->http = new HttpClient();
+        return $this->http ?? new HttpClient();
     }
 
     /**
      * Send text message.
      *
-     * @param $params
+     * @param  array  $params
      *
-     * @return \Psr\Http\Message\ResponseInterface
+     * @throws GuzzleException
+     * @throws CouldNotSendNotification
+     * @return ResponseInterface
      */
-    public function send($params)
+    public function send(array $params): ResponseInterface
     {
         return $this->post('me/messages', $params);
     }
 
     /**
-     * @param       $endpoint
-     * @param array $params
+     * @param  string  $endpoint
+     * @param  array   $params
      *
-     * @return \Psr\Http\Message\ResponseInterface
+     * @throws GuzzleException
+     * @throws CouldNotSendNotification
+     * @return ResponseInterface
      */
-    public function get($endpoint, array $params = [])
+    public function get(string $endpoint, array $params = []): ResponseInterface
     {
-        return $this->api($endpoint, ['query' => $params], 'GET');
+        return $this->api($endpoint, ['query' => $params]);
     }
 
     /**
-     * @param       $endpoint
-     * @param array $params
+     * @param  string  $endpoint
+     * @param  array   $params
      *
-     * @return \Psr\Http\Message\ResponseInterface
+     * @throws GuzzleException
+     * @throws CouldNotSendNotification
+     * @return ResponseInterface
      */
-    public function post($endpoint, array $params = [])
+    public function post(string $endpoint, array $params = []): ResponseInterface
     {
         return $this->api($endpoint, ['json' => $params], 'POST');
     }
@@ -73,20 +101,21 @@ class Facebook
     /**
      * Send an API request and return response.
      *
-     * @param        $endpoint
-     * @param        $options
-     * @param string $method
+     * @param  string  $endpoint
+     * @param  array   $options
+     * @param  string  $method
      *
-     * @return mixed|\Psr\Http\Message\ResponseInterface
+     * @throws GuzzleException
      * @throws CouldNotSendNotification
+     * @return mixed|ResponseInterface
      */
-    protected function api($endpoint, $options, $method = 'GET')
+    protected function api(string $endpoint, array $options, $method = 'GET')
     {
         if (empty($this->token)) {
             throw CouldNotSendNotification::facebookPageTokenNotProvided('You must provide your Facebook Page token to make any API requests.');
         }
 
-        $url = "https://graph.facebook.com/v2.7/{$endpoint}?access_token={$this->token}";
+        $url = "https://graph.facebook.com/v{$this->graphApiVersion}/{$endpoint}?access_token={$this->token}";
 
         try {
             return $this->httpClient()->request($method, $url, $options);
