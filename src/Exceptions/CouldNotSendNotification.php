@@ -5,30 +5,37 @@ namespace NotificationChannels\Facebook\Exceptions;
 use Exception;
 use GuzzleHttp\Exception\ClientException;
 
-class CouldNotSendNotification extends \Exception
+/**
+ * Class CouldNotSendNotification
+ */
+class CouldNotSendNotification extends Exception
 {
     /**
      * Thrown when there's a bad request and an error is responded.
      *
-     * @param ClientException $exception
+     * @param  ClientException  $exception
      *
      * @return static
      */
-    public static function facebookRespondedWithAnError(ClientException $exception)
+    public static function facebookRespondedWithAnError(ClientException $exception): CouldNotSendNotification
     {
-        $result = json_decode($exception->getResponse()->getBody());
+        if ($exception->hasResponse()) {
+            $result = json_decode($exception->getResponse()->getBody(), false);
 
-        return new static("Facebook responded with an error `{$result->error->code} - {$result->error->type} {$result->error->message}`");
+            return new static("Facebook responded with an error `{$result->error->code} - {$result->error->type} {$result->error->message}`");
+        }
+
+        return new static('Facebook responded with an error');
     }
 
     /**
      * Thrown when there's no page token provided.
      *
-     * @param string $message
+     * @param  string  $message
      *
      * @return static
      */
-    public static function facebookPageTokenNotProvided($message)
+    public static function facebookPageTokenNotProvided(string $message): CouldNotSendNotification
     {
         return new static($message);
     }
@@ -36,11 +43,11 @@ class CouldNotSendNotification extends \Exception
     /**
      * Thrown when we're unable to communicate with Telegram.
      *
-     * @param \Exception $exception
+     * @param  Exception  $exception
      *
      * @return static
      */
-    public static function couldNotCommunicateWithFacebook(Exception $exception)
+    public static function couldNotCommunicateWithFacebook(Exception $exception): CouldNotSendNotification
     {
         return new static('The communication with Facebook failed. Reason: '.$exception->getMessage());
     }

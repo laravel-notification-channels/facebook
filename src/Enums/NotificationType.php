@@ -7,7 +7,7 @@ namespace NotificationChannels\Facebook\Enums;
  */
 class NotificationType
 {
-    const REGULAR = 'REGULAR';
-    const NO_PUSH = 'NO_PUSH';
-    const SILENT_PUSH = 'SILENT_PUSH';
+    public const REGULAR = 'REGULAR';
+    public const NO_PUSH = 'NO_PUSH';
+    public const SILENT_PUSH = 'SILENT_PUSH';
 }

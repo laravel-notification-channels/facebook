@@ -2,15 +2,15 @@
 
 namespace NotificationChannels\Facebook;
 
+use JsonSerializable;
 use NotificationChannels\Facebook\Traits\HasButtons;
-use NotificationChannels\Facebook\Enums\AttachmentType;
-use NotificationChannels\Facebook\Enums\NotificationType;
 use NotificationChannels\Facebook\Exceptions\CouldNotCreateMessage;
+use NotificationChannels\Facebook\Enums\{AttachmentType, NotificationType};
 
 /**
  * Class FacebookMessage.
  */
-class FacebookMessage implements \JsonSerializable
+class FacebookMessage implements JsonSerializable
 {
     use HasButtons;
 
@@ -39,21 +39,24 @@ class FacebookMessage implements \JsonSerializable
     protected $hasText = false;
 
     /**
-     * @param string $text
+     * @param  string  $text
      *
+     * @throws CouldNotCreateMessage
      * @return static
      */
-    public static function create($text = '')
+    public static function create(string $text = ''): FacebookMessage
     {
         return new static($text);
     }
 
     /**
-     * @param string $text
+     * @param  string  $text
+     *
+     * @throws CouldNotCreateMessage
      */
-    public function __construct($text = '')
+    public function __construct(string $text = '')
     {
-        if ($text != '') {
+        if ($text !== '') {
             $this->text($text);
         }
     }
@@ -64,12 +67,12 @@ class FacebookMessage implements \JsonSerializable
      * The id must be an ID that was retrieved through the
      * Messenger entry points or through the Messenger webhooks.
      *
-     * @param $recipient ID of recipient or Phone number of the recipient
+     * @param  string  $recipient  ID of recipient or Phone number of the recipient
      *                   with the format +1(212)555-2368
      *
      * @return $this
      */
-    public function to($recipient)
+    public function to(string $recipient): self
     {
         $this->recipient = $recipient;
 
@@ -79,13 +82,13 @@ class FacebookMessage implements \JsonSerializable
     /**
      * Notification text.
      *
-     * @param $text
+     * @param  string  $text
      *
      * @throws CouldNotCreateMessage
      *
      * @return $this
      */
-    public function text($text)
+    public function text(string $text): self
     {
         if (mb_strlen($text) > 320) {
             throw CouldNotCreateMessage::textTooLong();
@@ -100,14 +103,14 @@ class FacebookMessage implements \JsonSerializable
     /**
      * Add Attachment.
      *
-     * @param $attachmentType
-     * @param $url
+     * @param  string  $attachmentType
+     * @param  string  $url
      *
      * @throws CouldNotCreateMessage
      *
      * @return $this
      */
-    public function attach($attachmentType, $url)
+    public function attach(string $attachmentType, string $url): self
     {
         $attachmentTypes = [
             AttachmentType::FILE,
@@ -116,11 +119,11 @@ class FacebookMessage implements \JsonSerializable
             AttachmentType::AUDIO,
         ];
 
-        if (! in_array($attachmentType, $attachmentTypes)) {
+        if (!in_array($attachmentType, $attachmentTypes, false)) {
             throw CouldNotCreateMessage::invalidAttachmentType();
         }
 
-        if (! isset($url)) {
+        if (blank($url)) {
             throw CouldNotCreateMessage::urlNotProvided();
         }
 
@@ -134,12 +137,23 @@ class FacebookMessage implements \JsonSerializable
     /**
      * Push notification type.
      *
-     * @param string $notificationType Possible values: REGULAR, SILENT_PUSH, NO_PUSH
+     * @param  string  $notificationType  Possible values: REGULAR, SILENT_PUSH, NO_PUSH
      *
+     * @throws CouldNotCreateMessage
      * @return $this
      */
-    public function notificationType($notificationType)
+    public function notificationType(string $notificationType): self
     {
+        $notificationTypes = [
+            NotificationType::REGULAR,
+            NotificationType::SILENT_PUSH,
+            NotificationType::NO_PUSH,
+        ];
+
+        if (!in_array($notificationType, $notificationTypes, false)) {
+            throw CouldNotCreateMessage::invalidNotificationType();
+        }
+
         $this->notificationType = $notificationType;
 
         return $this;
@@ -148,12 +162,12 @@ class FacebookMessage implements \JsonSerializable
     /**
      * Add up to 10 cards to be displayed in a carousel.
      *
-     * @param array $cards
+     * @param  array  $cards
      *
-     * @return $this
      * @throws CouldNotCreateMessage
+     * @return $this
      */
-    public function cards(array $cards = [])
+    public function cards(array $cards): self
     {
         if (count($cards) > 10) {
             throw CouldNotCreateMessage::messageCardsLimitExceeded();
@@ -169,15 +183,16 @@ class FacebookMessage implements \JsonSerializable
      *
      * @return bool
      */
-    public function toNotGiven()
+    public function toNotGiven(): bool
     {
-        return ! isset($this->recipient);
+        return !isset($this->recipient);
     }
 
     /**
      * Convert the object into something JSON serializable.
      *
-     * @return array
+     * @throws CouldNotCreateMessage
+     * @return mixed
      */
     public function jsonSerialize()
     {
@@ -190,14 +205,14 @@ class FacebookMessage implements \JsonSerializable
      * @throws CouldNotCreateMessage
      * @return array
      */
-    public function toArray()
+    public function toArray(): array
     {
         if ($this->hasAttachment) {
             return $this->attachmentMessageToArray();
         }
 
         if ($this->hasText) {
-            //check if has buttons
+            //check if it has buttons
             if (count($this->buttons) > 0) {
                 return $this->buttonMessageToArray();
             }
@@ -217,7 +232,7 @@ class FacebookMessage implements \JsonSerializable
      *
      * @return array
      */
-    protected function textMessageToArray()
+    protected function textMessageToArray(): array
     {
         $message = [];
         $message['recipient'] = $this->recipient;
@@ -232,7 +247,7 @@ class FacebookMessage implements \JsonSerializable
      *
      * @return array
      */
-    protected function attachmentMessageToArray()
+    protected function attachmentMessageToArray(): array
     {
         $message = [];
         $message['recipient'] = $this->recipient;
@@ -248,7 +263,7 @@ class FacebookMessage implements \JsonSerializable
      *
      * @return array
      */
-    protected function genericMessageToArray()
+    protected function genericMessageToArray(): array
     {
         $message = [];
         $message['recipient'] = $this->recipient;
@@ -265,7 +280,7 @@ class FacebookMessage implements \JsonSerializable
      *
      * @return array
      */
-    protected function buttonMessageToArray()
+    protected function buttonMessageToArray(): array
     {
         $message = [];
         $message['recipient'] = $this->recipient;

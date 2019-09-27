@@ -2,14 +2,19 @@
 
 namespace NotificationChannels\Facebook\Exceptions;
 
-class CouldNotCreateCard extends \Exception
+use Exception;
+
+/**
+ * Class CouldNotCreateCard
+ */
+class CouldNotCreateCard extends Exception
 {
     /**
      * Thrown when the button title is not provided.
      *
      * @return static
      */
-    public static function titleNotProvided()
+    public static function titleNotProvided(): CouldNotCreateCard
     {
         return new static('Button title was not provided, A 20 character limited title should be provided.');
     }
@@ -17,9 +22,11 @@ class CouldNotCreateCard extends \Exception
     /**
      * Thrown when the title characters limit is exceeded.
      *
+     * @param  string  $title
+     *
      * @return static
      */
-    public static function titleLimitExceeded($title)
+    public static function titleLimitExceeded(string $title): CouldNotCreateCard
     {
         $count = mb_strlen($title);
 
@@ -31,9 +38,11 @@ class CouldNotCreateCard extends \Exception
     /**
      * Thrown when the subtitle characters limit is exceeded.
      *
+     * @param  string  $title
+     *
      * @return static
      */
-    public static function subtitleLimitExceeded($title)
+    public static function subtitleLimitExceeded(string $title): CouldNotCreateCard
     {
         $count = mb_strlen($title);
 

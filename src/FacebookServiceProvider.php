@@ -4,6 +4,9 @@ namespace NotificationChannels\Facebook;
 
 use Illuminate\Support\ServiceProvider;
 
+/**
+ * Class FacebookServiceProvider
+ */
 class FacebookServiceProvider extends ServiceProvider
 {
     /**
@@ -13,17 +16,10 @@ class FacebookServiceProvider extends ServiceProvider
     {
         $this->app->when(FacebookChannel::class)
             ->needs(Facebook::class)
-            ->give(function () {
-                $pageToken = config('services.facebook.page-token');
+            ->give(static function () {
+                $facebook = new Facebook(config('services.facebook.page-token'));
 
-                return new Facebook($pageToken);
+                return $facebook->setGraphApiVersion(config('services.facebook.version', '4.0'));
             });
-    }
-
-    /**
-     * Register any package services.
-     */
-    public function register()
-    {
     }
 }

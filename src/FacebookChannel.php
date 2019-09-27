@@ -2,9 +2,13 @@
 
 namespace NotificationChannels\Facebook;
 
+use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Notifications\Notification;
-use NotificationChannels\Facebook\Exceptions\CouldNotCreateMessage;
+use NotificationChannels\Facebook\Exceptions\{CouldNotCreateMessage, CouldNotSendNotification};
 
+/**
+ * Class FacebookChannel
+ */
 class FacebookChannel
 {
     /** @var Facebook */
@@ -13,7 +17,7 @@ class FacebookChannel
     /**
      * FacebookChannel constructor.
      *
-     * @param Facebook $fb
+     * @param  Facebook  $fb
      */
     public function __construct(Facebook $fb)
     {
@@ -23,12 +27,14 @@ class FacebookChannel
     /**
      * Send the given notification.
      *
-     * @param mixed                                  $notifiable
-     * @param \Illuminate\Notifications\Notification $notification
+     * @param  mixed         $notifiable
+     * @param  Notification  $notification
      *
-     * @throws \NotificationChannels\Facebook\Exceptions\CouldNotCreateMessage
+     * @throws CouldNotCreateMessage
+     * @throws CouldNotSendNotification
+     * @throws GuzzleException
      */
-    public function send($notifiable, Notification $notification)
+    public function send($notifiable, Notification $notification): void
     {
         $message = $notification->toFacebook($notifiable);
 
@@ -37,7 +43,7 @@ class FacebookChannel
         }
 
         if ($message->toNotGiven()) {
-            if (! $to = $notifiable->routeNotificationFor('facebook')) {
+            if (!$to = $notifiable->routeNotificationFor('facebook')) {
                 throw CouldNotCreateMessage::recipientNotProvided();
             }
 

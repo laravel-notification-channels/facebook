@@ -2,14 +2,19 @@
 
 namespace NotificationChannels\Facebook\Exceptions;
 
-class CouldNotCreateMessage extends \Exception
+use Exception;
+
+/**
+ * Class CouldNotCreateMessage
+ */
+class CouldNotCreateMessage extends Exception
 {
     /**
      * Thrown when the message text is not provided.
      *
      * @return static
      */
-    public static function textTooLong()
+    public static function textTooLong(): CouldNotCreateMessage
     {
         return new static('Message text is too long, A 320 character limited string should be provided.');
     }
@@ -19,7 +24,7 @@ class CouldNotCreateMessage extends \Exception
      *
      * @return static
      */
-    public static function invalidNotificationType()
+    public static function invalidNotificationType(): CouldNotCreateMessage
     {
         return new static('Notification Type provided is invalid.');
     }
@@ -29,7 +34,7 @@ class CouldNotCreateMessage extends \Exception
      *
      * @return static
      */
-    public static function invalidAttachmentType()
+    public static function invalidAttachmentType(): CouldNotCreateMessage
     {
         return new static('Attachment Type provided is invalid.');
     }
@@ -39,60 +44,19 @@ class CouldNotCreateMessage extends \Exception
      *
      * @return static
      */
-    public static function urlNotProvided()
+    public static function urlNotProvided(): CouldNotCreateMessage
     {
         return new static('You have not provided a Url for an attachment');
     }
 
     /**
-     * Thrown when a attachment type is not provided.
+     * Thrown when enough data is not provided.
      *
      * @return static
      */
-    public static function attachmentTypeNotProvided()
-    {
-        return new static('You have not provided a type for an attachment');
-    }
-
-    /**
-     * Thrown when the button type is "postback" or "phone_number",
-     * but the data value is not provided for the payload.
-     *
-     * @return static
-     */
-    public static function dataNotProvided()
+    public static function dataNotProvided(): CouldNotCreateMessage
     {
         return new static('Your message was missing critical information');
-    }
-
-    /**
-     * Thrown when the title characters limit is exceeded.
-     *
-     * @return static
-     */
-    public static function titleLimitExceeded($title)
-    {
-        $count = mb_strlen($title);
-
-        return new static(
-            "Your title was {$count} characters long, which exceeds the 20 character limit. Please check the button template docs for more information."
-        );
-    }
-
-    /**
-     * Thrown when the payload characters limit is exceeded.
-     *
-     * @param mixed $data
-     *
-     * @return static
-     */
-    public static function payloadLimitExceeded($data)
-    {
-        $count = mb_strlen($data);
-
-        return new static(
-            "Your payload was {$count} characters long, which exceeds the 1000 character limit. Please check the button template docs for more information."
-        );
     }
 
     /**
@@ -100,7 +64,7 @@ class CouldNotCreateMessage extends \Exception
      *
      * @return static
      */
-    public static function messageButtonsLimitExceeded()
+    public static function messageButtonsLimitExceeded(): CouldNotCreateMessage
     {
         return new static('You cannot add more than 3 buttons in 1 notification message.');
     }
@@ -110,7 +74,7 @@ class CouldNotCreateMessage extends \Exception
      *
      * @return static
      */
-    public static function messageCardsLimitExceeded()
+    public static function messageCardsLimitExceeded(): CouldNotCreateMessage
     {
         return new static('You cannot add more than 10 cards in 1 notification message.');
     }
@@ -120,7 +84,7 @@ class CouldNotCreateMessage extends \Exception
      *
      * @return static
      */
-    public static function recipientNotProvided()
+    public static function recipientNotProvided(): CouldNotCreateMessage
     {
         return new static('Facebook notification recipient ID or Phone Number was not provided. Please refer usage docs.');
     }

@@ -2,10 +2,14 @@
 
 namespace NotificationChannels\Facebook\Components;
 
+use JsonSerializable;
 use NotificationChannels\Facebook\Traits\HasButtons;
 use NotificationChannels\Facebook\Exceptions\CouldNotCreateCard;
 
-class Card implements \JsonSerializable
+/**
+ * Class Card
+ */
+class Card implements JsonSerializable
 {
     use HasButtons;
 
@@ -15,11 +19,12 @@ class Card implements \JsonSerializable
     /**
      * Create a Card.
      *
-     * @param string $title
+     * @param  string  $title
      *
+     * @throws CouldNotCreateCard
      * @return static
      */
-    public static function create($title = '')
+    public static function create(string $title = ''): Card
     {
         return new static($title);
     }
@@ -27,11 +32,11 @@ class Card implements \JsonSerializable
     /**
      * Create Card constructor.
      *
-     * @param string $title
+     * @param  string  $title
      *
      * @throws CouldNotCreateCard
      */
-    public function __construct($title = '')
+    public function __construct(string $title = '')
     {
         if ($title !== '') {
             $this->title($title);
@@ -41,12 +46,12 @@ class Card implements \JsonSerializable
     /**
      * Set Button Title.
      *
-     * @param $title
+     * @param  string  $title
      *
      * @throws CouldNotCreateCard
      * @return $this
      */
-    public function title($title)
+    public function title(string $title): self
     {
         if (mb_strlen($title) > 80) {
             throw CouldNotCreateCard::titleLimitExceeded($title);
@@ -60,11 +65,11 @@ class Card implements \JsonSerializable
     /**
      * Set Card Item Url.
      *
-     * @param $itemUrl
+     * @param  string  $itemUrl
      *
      * @return $this
      */
-    public function url($itemUrl)
+    public function url(string $itemUrl): self
     {
         $this->payload['item_url'] = $itemUrl;
 
@@ -74,11 +79,11 @@ class Card implements \JsonSerializable
     /**
      * Set Card Image Url.
      *
-     * @param $imageUrl Image ration should be 1.91:1
+     * @param  string  $imageUrl  Image ratio should be 1.91:1
      *
      * @return $this
      */
-    public function image($imageUrl)
+    public function image(string $imageUrl): self
     {
         $this->payload['image_url'] = $imageUrl;
 
@@ -88,12 +93,12 @@ class Card implements \JsonSerializable
     /**
      * Set Card Subtitle.
      *
-     * @param $subtitle
+     * @param  string  $subtitle
      *
      * @throws CouldNotCreateCard
      * @return $this
      */
-    public function subtitle($subtitle)
+    public function subtitle(string $subtitle): self
     {
         if (mb_strlen($subtitle) > 80) {
             throw CouldNotCreateCard::subtitleLimitExceeded($subtitle);
@@ -107,12 +112,12 @@ class Card implements \JsonSerializable
     /**
      * Returns a payload for API request.
      *
-     * @return array
      * @throws CouldNotCreateCard
+     * @return array
      */
-    public function toArray()
+    public function toArray(): array
     {
-        if (! isset($this->payload['title'])) {
+        if (!isset($this->payload['title'])) {
             throw CouldNotCreateCard::titleNotProvided();
         }
 
@@ -126,7 +131,8 @@ class Card implements \JsonSerializable
     /**
      * Convert the object into something JSON serializable.
      *
-     * @return array
+     * @throws CouldNotCreateCard
+     * @return mixed
      */
     public function jsonSerialize()
     {
