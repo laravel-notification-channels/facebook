@@ -11,12 +11,11 @@ This package makes it easy to send notifications using the [Facebook Messenger](
 ## Contents
 
 - [Installation](#installation)
-	- [Setting up the Facebook service](#setting-up-the-facebook-service)
+	- [Setting up your Facebook Bot](#setting-up-your-facebook-bot)
 - [Usage](#usage)
 	- [Available Message methods](#available-message-methods)
-- [Changelog](#changelog)
-- [Testing](#testing)
-- [Security](#security)
+	- [Available Button methods](#available-button-methods)
+	- [Available Card methods](#available-card-methods)
 - [Contributing](#contributing)
 - [Credits](#credits)
 - [License](#license)
@@ -55,7 +54,7 @@ Based on the details you add (text, attachments etc.) will determine automatical
 ``` php
 use NotificationChannels\Facebook\FacebookChannel;
 use NotificationChannels\Facebook\FacebookMessage;
-use NotificationChannels\Facebook\Component\Button;
+use NotificationChannels\Facebook\Components\Button;
 use NotificationChannels\Facebook\Enums\NotificationType;
 
 use Illuminate\Notifications\Notification;
@@ -125,7 +124,7 @@ return FacebookMessage::create()
 
 You can either send the notification by providing with the page-scoped user id (PSID) of the recipient to the `to($userId)` method like shown in the above example or add a `routeNotificationForFacebook()` method in your notifiable model:
 
-``` php
+```php
 ...
 /**
  * Route notifications for the Facebook channel.
