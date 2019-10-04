@@ -70,11 +70,13 @@ class FacebookMessage implements JsonSerializable
      * @param  string  $recipient  ID of recipient or Phone number of the recipient
      *                   with the format +1(212)555-2368
      *
+     * @param  string  $type Recipient Type: id, user_ref, phone_number, post_id, comment_id.
+     *
      * @return $this
      */
-    public function to(string $recipient): self
+    public function to(string $recipient, string $type = 'id'): self
     {
-        $this->recipient = $recipient;
+        $this->recipient = [$type => $recipient];
 
         return $this;
     }

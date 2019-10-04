@@ -140,7 +140,7 @@ public function routeNotificationForFacebook()
 
 ### Available Message methods
 
-- `to($userIdOrPhoneNumber)`: (string) Recipient's page-scoped User ID or Phone number of with the format `+1(212)555-2368`. **NOTE:** Sending a message to phone numbers requires the `pages_messaging_phone_number` permission. Refer [docs](https://developers.facebook.com/docs/messenger-platform/send-api-reference#phone_number) for more information.
+- `to($pageScopedIdOrPhoneNumber, $type)`: (string) Recipient's page-scoped User `id`, `phone_number`, `user_ref`, `post_id` or `comment_id` (as one of the supported types). Phone number supported format `+1(212)555-2368`. **NOTE:** Sending a message to phone numbers requires the `pages_messaging_phone_number` permission. Refer [docs](https://developers.facebook.com/docs/messenger-platform/send-api-reference#phone_number) for more information.
 - `text('')`: (string) Notification message.
 - `attach($attachment_type, $url)`: (AttachmentType, string) An attachment type (IMAGE, AUDIO, VIDEO, FILE) and the url of this attachment
 - `buttons($buttons = [])`: (array) An array of "Call to Action" buttons (Created using `NotificationChannels\Facebook\Components\Button::create()`). You can add up to 3 buttons of one of the following types: `web_url`, `postback` or `phone_number`. See Button methods below for more details.
