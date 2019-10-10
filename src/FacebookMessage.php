@@ -5,7 +5,7 @@ namespace NotificationChannels\Facebook;
 use JsonSerializable;
 use NotificationChannels\Facebook\Traits\HasButtons;
 use NotificationChannels\Facebook\Exceptions\CouldNotCreateMessage;
-use NotificationChannels\Facebook\Enums\{AttachmentType, NotificationType};
+use NotificationChannels\Facebook\Enums\{MessagingType, RecipientType, AttachmentType, NotificationType};
 
 /**
  * Class FacebookMessage.
@@ -17,11 +17,17 @@ class FacebookMessage implements JsonSerializable
     /** @var string Recipient's ID. */
     public $recipient;
 
+    /** @var string Recipient Type */
+    public $recipientType = RecipientType::ID;
+
     /** @var string Notification Text. */
     public $text;
 
     /** @var string Notification Type */
     public $notificationType = NotificationType::REGULAR;
+
+    /** @var string Messaging Type. Defaults to UPDATE */
+    protected $messagingType = MessagingType::UPDATE;
 
     /** @var array Generic Template Cards (items) */
     public $cards = [];
@@ -37,6 +43,9 @@ class FacebookMessage implements JsonSerializable
 
     /** @var bool */
     protected $hasText = false;
+
+    /** @var string Message tag used with messaging type MESSAGE_TAG */
+    protected $messageTag;
 
     /**
      * @param  string  $text
@@ -67,16 +76,20 @@ class FacebookMessage implements JsonSerializable
      * The id must be an ID that was retrieved through the
      * Messenger entry points or through the Messenger webhooks.
      *
-     * @param  string  $recipient  ID of recipient or Phone number of the recipient
-     *                   with the format +1(212)555-2368
-     *
-     * @param  string  $type Recipient Type: id, user_ref, phone_number, post_id, comment_id.
+     * @param  string|array  $recipient  ID of recipient or Phone number of the recipient with the format
+     *     +1(212)555-2368
+     * @param  string        $type  Recipient Type: id, user_ref, phone_number, post_id, comment_id.
      *
      * @return $this
      */
-    public function to(string $recipient, string $type = 'id'): self
+    public function to($recipient, string $type = RecipientType::ID): self
     {
-        $this->recipient = [$type => $recipient];
+        if (is_array($recipient)) {
+            [$type, $recipient] = $recipient;
+        }
+
+        $this->recipient = $recipient;
+        $this->recipientType = $type;
 
         return $this;
     }
@@ -162,6 +175,81 @@ class FacebookMessage implements JsonSerializable
     }
 
     /**
+     * Helper to set notification type as REGULAR.
+     *
+     * @return $this
+     */
+    public function isTypeRegular(): self
+    {
+        $this->notificationType = NotificationType::REGULAR;
+
+        return $this;
+    }
+
+    /**
+     * Helper to set notification type as SILENT_PUSH.
+     *
+     * @return $this
+     */
+    public function isTypeSilentPush(): self
+    {
+        $this->notificationType = NotificationType::SILENT_PUSH;
+
+        return $this;
+    }
+
+    /**
+     * Helper to set notification type as NO_PUSH.
+     *
+     * @return $this
+     */
+    public function isTypeNoPush(): self
+    {
+        $this->notificationType = NotificationType::NO_PUSH;
+
+        return $this;
+    }
+
+    /**
+     * Helper to set messaging type as RESPONSE.
+     *
+     * @return $this
+     */
+    public function isResponse(): self
+    {
+        $this->messagingType = MessagingType::RESPONSE;
+
+        return $this;
+    }
+
+    /**
+     * Helper to set messaging type as UPDATE.
+     *
+     * @return $this
+     */
+    public function isUpdate(): self
+    {
+        $this->messagingType = MessagingType::UPDATE;
+
+        return $this;
+    }
+
+    /**
+     * Helper to set messaging type as MESSAGE_TAG.
+     *
+     * @param $messageTag
+     *
+     * @return $this
+     */
+    public function isMessageTag($messageTag): self
+    {
+        $this->messagingType = MessagingType::MESSAGE_TAG;
+        $this->messageTag = $messageTag;
+
+        return $this;
+    }
+
+    /**
      * Add up to 10 cards to be displayed in a carousel.
      *
      * @param  array  $cards
@@ -214,7 +302,7 @@ class FacebookMessage implements JsonSerializable
         }
 
         if ($this->hasText) {
-            //check if it has buttons
+            // check if it has buttons
             if (count($this->buttons) > 0) {
                 return $this->buttonMessageToArray();
             }
@@ -237,9 +325,14 @@ class FacebookMessage implements JsonSerializable
     protected function textMessageToArray(): array
     {
         $message = [];
-        $message['recipient'] = $this->recipient;
+        $message['recipient'][$this->recipientType] = $this->recipient;
         $message['notification_type'] = $this->notificationType;
         $message['message']['text'] = $this->text;
+        $message['messaging_type'] = $this->messagingType;
+
+        if (filled($this->messageTag)) {
+            $message['tag'] = $this->messageTag;
+        }
 
         return $message;
     }
@@ -252,10 +345,15 @@ class FacebookMessage implements JsonSerializable
     protected function attachmentMessageToArray(): array
     {
         $message = [];
-        $message['recipient'] = $this->recipient;
+        $message['recipient'][$this->recipientType] = $this->recipient;
         $message['notification_type'] = $this->notificationType;
         $message['message']['attachment']['type'] = $this->attachmentType;
         $message['message']['attachment']['payload']['url'] = $this->attachmentUrl;
+        $message['messaging_type'] = $this->messagingType;
+
+        if (filled($this->messageTag)) {
+            $message['tag'] = $this->messageTag;
+        }
 
         return $message;
     }
@@ -268,11 +366,16 @@ class FacebookMessage implements JsonSerializable
     protected function genericMessageToArray(): array
     {
         $message = [];
-        $message['recipient'] = $this->recipient;
+        $message['recipient'][$this->recipientType] = $this->recipient;
         $message['notification_type'] = $this->notificationType;
         $message['message']['attachment']['type'] = 'template';
         $message['message']['attachment']['payload']['template_type'] = 'generic';
         $message['message']['attachment']['payload']['elements'] = $this->cards;
+        $message['messaging_type'] = $this->messagingType;
+
+        if (filled($this->messageTag)) {
+            $message['tag'] = $this->messageTag;
+        }
 
         return $message;
     }
@@ -285,12 +388,17 @@ class FacebookMessage implements JsonSerializable
     protected function buttonMessageToArray(): array
     {
         $message = [];
-        $message['recipient'] = $this->recipient;
+        $message['recipient'][$this->recipientType] = $this->recipient;
         $message['notification_type'] = $this->notificationType;
         $message['message']['attachment']['type'] = 'template';
         $message['message']['attachment']['payload']['template_type'] = 'button';
         $message['message']['attachment']['payload']['text'] = $this->text;
         $message['message']['attachment']['payload']['buttons'] = $this->buttons;
+        $message['messaging_type'] = $this->messagingType;
+
+        if (filled($this->messageTag)) {
+            $message['tag'] = $this->messageTag;
+        }
 
         return $message;
     }
