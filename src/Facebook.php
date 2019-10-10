@@ -10,7 +10,7 @@ use GuzzleHttp\Exception\GuzzleException;
 use NotificationChannels\Facebook\Exceptions\CouldNotSendNotification;
 
 /**
- * Class Facebook
+ * Class Facebook.
  */
 class Facebook
 {
@@ -41,7 +41,7 @@ class Facebook
      *
      * @return Facebook
      */
-    public function setGraphApiVersion($graphApiVersion): Facebook
+    public function setGraphApiVersion($graphApiVersion): self
     {
         $this->graphApiVersion = $graphApiVersion;
 

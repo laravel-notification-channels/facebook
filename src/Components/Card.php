@@ -7,7 +7,7 @@ use NotificationChannels\Facebook\Traits\HasButtons;
 use NotificationChannels\Facebook\Exceptions\CouldNotCreateCard;
 
 /**
- * Class Card
+ * Class Card.
  */
 class Card implements JsonSerializable
 {
@@ -24,7 +24,7 @@ class Card implements JsonSerializable
      * @throws CouldNotCreateCard
      * @return static
      */
-    public static function create(string $title = ''): Card
+    public static function create(string $title = ''): self
     {
         return new static($title);
     }
@@ -117,7 +117,7 @@ class Card implements JsonSerializable
      */
     public function toArray(): array
     {
-        if (!isset($this->payload['title'])) {
+        if (! isset($this->payload['title'])) {
             throw CouldNotCreateCard::titleNotProvided();
         }
 

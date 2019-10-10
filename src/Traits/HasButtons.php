@@ -5,9 +5,7 @@ namespace NotificationChannels\Facebook\Traits;
 use NotificationChannels\Facebook\Exceptions\CouldNotCreateMessage;
 
 /**
- * Trait HasButtons
- *
- * @package NotificationChannels\Facebook\Traits
+ * Trait HasButtons.
  */
 trait HasButtons
 {

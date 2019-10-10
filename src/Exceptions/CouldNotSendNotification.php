@@ -6,7 +6,7 @@ use Exception;
 use GuzzleHttp\Exception\ClientException;
 
 /**
- * Class CouldNotSendNotification
+ * Class CouldNotSendNotification.
  */
 class CouldNotSendNotification extends Exception
 {
@@ -17,7 +17,7 @@ class CouldNotSendNotification extends Exception
      *
      * @return static
      */
-    public static function facebookRespondedWithAnError(ClientException $exception): CouldNotSendNotification
+    public static function facebookRespondedWithAnError(ClientException $exception): self
     {
         if ($exception->hasResponse()) {
             $result = json_decode($exception->getResponse()->getBody(), false);
@@ -35,7 +35,7 @@ class CouldNotSendNotification extends Exception
      *
      * @return static
      */
-    public static function facebookPageTokenNotProvided(string $message): CouldNotSendNotification
+    public static function facebookPageTokenNotProvided(string $message): self
     {
         return new static($message);
     }
@@ -47,7 +47,7 @@ class CouldNotSendNotification extends Exception
      *
      * @return static
      */
-    public static function couldNotCommunicateWithFacebook(Exception $exception): CouldNotSendNotification
+    public static function couldNotCommunicateWithFacebook(Exception $exception): self
     {
         return new static('The communication with Facebook failed. Reason: '.$exception->getMessage());
     }

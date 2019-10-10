@@ -5,7 +5,7 @@ namespace NotificationChannels\Facebook\Test;
 use PHPUnit_Framework_TestCase;
 
 /**
- * Class ExampleTest
+ * Class ExampleTest.
  */
 class ExampleTest extends PHPUnit_Framework_TestCase
 {

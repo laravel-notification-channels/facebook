@@ -4,10 +4,11 @@ namespace NotificationChannels\Facebook;
 
 use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Notifications\Notification;
-use NotificationChannels\Facebook\Exceptions\{CouldNotCreateMessage, CouldNotSendNotification};
+use NotificationChannels\Facebook\Exceptions\CouldNotCreateMessage;
+use NotificationChannels\Facebook\Exceptions\CouldNotSendNotification;
 
 /**
- * Class FacebookChannel
+ * Class FacebookChannel.
  */
 class FacebookChannel
 {
@@ -43,7 +44,7 @@ class FacebookChannel
         }
 
         if ($message->toNotGiven()) {
-            if (!$to = $notifiable->routeNotificationFor('facebook')) {
+            if (! $to = $notifiable->routeNotificationFor('facebook')) {
                 throw CouldNotCreateMessage::recipientNotProvided();
             }
 
