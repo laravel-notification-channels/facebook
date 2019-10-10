@@ -5,7 +5,7 @@ namespace NotificationChannels\Facebook;
 use Illuminate\Support\ServiceProvider;
 
 /**
- * Class FacebookServiceProvider
+ * Class FacebookServiceProvider.
  */
 class FacebookServiceProvider extends ServiceProvider
 {

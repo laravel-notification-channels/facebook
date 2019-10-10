@@ -5,7 +5,7 @@ namespace NotificationChannels\Facebook\Exceptions;
 use Exception;
 
 /**
- * Class CouldNotCreateButton
+ * Class CouldNotCreateButton.
  */
 class CouldNotCreateButton extends Exception
 {
@@ -14,7 +14,7 @@ class CouldNotCreateButton extends Exception
      *
      * @return static
      */
-    public static function titleNotProvided(): CouldNotCreateButton
+    public static function titleNotProvided(): self
     {
         return new static('Button title was not provided, A 20 character limited title should be provided.');
     }
@@ -24,7 +24,7 @@ class CouldNotCreateButton extends Exception
      *
      * @return static
      */
-    public static function urlNotProvided(): CouldNotCreateButton
+    public static function urlNotProvided(): self
     {
         return new static('Your button type is `web_url` but the url is not provided.');
     }
@@ -34,7 +34,7 @@ class CouldNotCreateButton extends Exception
      *
      * @return static
      */
-    public static function phoneNumberNotProvided(): CouldNotCreateButton
+    public static function phoneNumberNotProvided(): self
     {
         return new static('Your button type is `phone_number` but the phone number is not provided.');
     }
@@ -44,7 +44,7 @@ class CouldNotCreateButton extends Exception
      *
      * @return static
      */
-    public static function postbackNotProvided(): CouldNotCreateButton
+    public static function postbackNotProvided(): self
     {
         return new static('Your button type is `postback` but the postback data is not provided.');
     }
@@ -56,7 +56,7 @@ class CouldNotCreateButton extends Exception
      *
      * @return static
      */
-    public static function titleLimitExceeded(string $title): CouldNotCreateButton
+    public static function titleLimitExceeded(string $title): self
     {
         $count = mb_strlen($title);
 
@@ -72,7 +72,7 @@ class CouldNotCreateButton extends Exception
      *
      * @return static
      */
-    public static function payloadLimitExceeded($data): CouldNotCreateButton
+    public static function payloadLimitExceeded($data): self
     {
         $count = mb_strlen($data);
 
@@ -88,7 +88,7 @@ class CouldNotCreateButton extends Exception
      *
      * @return static
      */
-    public static function invalidUrlProvided(string $url): CouldNotCreateButton
+    public static function invalidUrlProvided(string $url): self
     {
         return new static("`{$url}` is not a valid URL. Please check and provide a valid URL");
     }
@@ -100,7 +100,7 @@ class CouldNotCreateButton extends Exception
      *
      * @return static
      */
-    public static function invalidPhoneNumberProvided(string $phoneNumber): CouldNotCreateButton
+    public static function invalidPhoneNumberProvided(string $phoneNumber): self
     {
         return new static(
             "Provided phone number `{$phoneNumber}` format is invalid.".

@@ -8,7 +8,7 @@ use NotificationChannels\Facebook\Enums\ButtonType;
 use NotificationChannels\Facebook\Exceptions\CouldNotCreateButton;
 
 /**
- * Class Button
+ * Class Button.
  */
 class Button implements JsonSerializable
 {
@@ -33,7 +33,7 @@ class Button implements JsonSerializable
      *
      * @return static
      */
-    public static function create(string $title = '', $data = null, string $type = ButtonType::WEB_URL): Button
+    public static function create(string $title = '', $data = null, string $type = ButtonType::WEB_URL): self
     {
         return new static($title, $data, $type);
     }
@@ -89,7 +89,7 @@ class Button implements JsonSerializable
             throw CouldNotCreateButton::urlNotProvided();
         }
 
-        if (!filter_var($url, FILTER_VALIDATE_URL)) {
+        if (! filter_var($url, FILTER_VALIDATE_URL)) {
             throw CouldNotCreateButton::invalidUrlProvided($url);
         }
 
@@ -111,7 +111,7 @@ class Button implements JsonSerializable
             throw CouldNotCreateButton::phoneNumberNotProvided();
         }
 
-        if (is_string($phone) && !Str::startsWith($phone, '+')) {
+        if (is_string($phone) && ! Str::startsWith($phone, '+')) {
             throw CouldNotCreateButton::invalidPhoneNumberProvided($phone);
         }
 

@@ -4,8 +4,11 @@ namespace NotificationChannels\Facebook;
 
 use JsonSerializable;
 use NotificationChannels\Facebook\Traits\HasButtons;
+use NotificationChannels\Facebook\Enums\MessagingType;
+use NotificationChannels\Facebook\Enums\RecipientType;
+use NotificationChannels\Facebook\Enums\AttachmentType;
+use NotificationChannels\Facebook\Enums\NotificationType;
 use NotificationChannels\Facebook\Exceptions\CouldNotCreateMessage;
-use NotificationChannels\Facebook\Enums\{MessagingType, RecipientType, AttachmentType, NotificationType};
 
 /**
  * Class FacebookMessage.
@@ -53,7 +56,7 @@ class FacebookMessage implements JsonSerializable
      * @throws CouldNotCreateMessage
      * @return static
      */
-    public static function create(string $text = ''): FacebookMessage
+    public static function create(string $text = ''): self
     {
         return new static($text);
     }
@@ -134,7 +137,7 @@ class FacebookMessage implements JsonSerializable
             AttachmentType::AUDIO,
         ];
 
-        if (!in_array($attachmentType, $attachmentTypes, false)) {
+        if (! in_array($attachmentType, $attachmentTypes, false)) {
             throw CouldNotCreateMessage::invalidAttachmentType();
         }
 
@@ -165,7 +168,7 @@ class FacebookMessage implements JsonSerializable
             NotificationType::NO_PUSH,
         ];
 
-        if (!in_array($notificationType, $notificationTypes, false)) {
+        if (! in_array($notificationType, $notificationTypes, false)) {
             throw CouldNotCreateMessage::invalidNotificationType();
         }
 
@@ -275,7 +278,7 @@ class FacebookMessage implements JsonSerializable
      */
     public function toNotGiven(): bool
     {
-        return !isset($this->recipient);
+        return ! isset($this->recipient);
     }
 
     /**

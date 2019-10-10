@@ -5,7 +5,7 @@ namespace NotificationChannels\Facebook\Exceptions;
 use Exception;
 
 /**
- * Class CouldNotCreateMessage
+ * Class CouldNotCreateMessage.
  */
 class CouldNotCreateMessage extends Exception
 {
@@ -14,7 +14,7 @@ class CouldNotCreateMessage extends Exception
      *
      * @return static
      */
-    public static function textTooLong(): CouldNotCreateMessage
+    public static function textTooLong(): self
     {
         return new static('Message text is too long, A 320 character limited string should be provided.');
     }
@@ -24,7 +24,7 @@ class CouldNotCreateMessage extends Exception
      *
      * @return static
      */
-    public static function invalidNotificationType(): CouldNotCreateMessage
+    public static function invalidNotificationType(): self
     {
         return new static('Notification Type provided is invalid.');
     }
@@ -34,7 +34,7 @@ class CouldNotCreateMessage extends Exception
      *
      * @return static
      */
-    public static function invalidAttachmentType(): CouldNotCreateMessage
+    public static function invalidAttachmentType(): self
     {
         return new static('Attachment Type provided is invalid.');
     }
@@ -44,7 +44,7 @@ class CouldNotCreateMessage extends Exception
      *
      * @return static
      */
-    public static function urlNotProvided(): CouldNotCreateMessage
+    public static function urlNotProvided(): self
     {
         return new static('You have not provided a Url for an attachment');
     }
@@ -54,7 +54,7 @@ class CouldNotCreateMessage extends Exception
      *
      * @return static
      */
-    public static function dataNotProvided(): CouldNotCreateMessage
+    public static function dataNotProvided(): self
     {
         return new static('Your message was missing critical information');
     }
@@ -64,7 +64,7 @@ class CouldNotCreateMessage extends Exception
      *
      * @return static
      */
-    public static function messageButtonsLimitExceeded(): CouldNotCreateMessage
+    public static function messageButtonsLimitExceeded(): self
     {
         return new static('You cannot add more than 3 buttons in 1 notification message.');
     }
@@ -74,7 +74,7 @@ class CouldNotCreateMessage extends Exception
      *
      * @return static
      */
-    public static function messageCardsLimitExceeded(): CouldNotCreateMessage
+    public static function messageCardsLimitExceeded(): self
     {
         return new static('You cannot add more than 10 cards in 1 notification message.');
     }
@@ -84,7 +84,7 @@ class CouldNotCreateMessage extends Exception
      *
      * @return static
      */
-    public static function recipientNotProvided(): CouldNotCreateMessage
+    public static function recipientNotProvided(): self
     {
         return new static('Facebook notification recipient ID or Phone Number was not provided. Please refer usage docs.');
     }
