@@ -39,7 +39,10 @@ Next we need to add this token to our Laravel configurations. Create a new Faceb
 // config/services.php
 ...
 'facebook' => [
-    'page-token' => env('FACEBOOK_PAGE_TOKEN', 'YOUR PAGE TOKEN HERE')
+    'page-token' => env('FACEBOOK_PAGE_TOKEN', 'YOUR PAGE TOKEN HERE'),
+    
+    // Optional - Omit this if you want to use default version.
+    'version' => env('FACEBOOK_GRAPH_API_VERSION', '4.0')
 ],
 ...
 ```
@@ -51,7 +54,7 @@ You can now use the Facebook channel in your `via()` method, inside the InvoiceP
 
 Based on the details you add (text, attachments etc.) will determine automatically the type of message to be sent. For example if you only add `text()` then it will be a basic message; using `attach()` will turn this into a attachment message. Having `buttons` or `cards` will change this to the `Button Template` and `Generic Template` respectivily
 
-``` php
+```php
 use NotificationChannels\Facebook\FacebookChannel;
 use NotificationChannels\Facebook\FacebookMessage;
 use NotificationChannels\Facebook\Components\Button;
@@ -73,7 +76,10 @@ class InvoicePaid extends Notification
         return FacebookMessage::create()
             ->to($this->user->fb_messenger_user_id) // Optional
             ->text('One of your invoices has been paid!')
-            ->notificationType(NotificationType::REGULAR) // Optional
+            ->isUpdate() // Optional
+            ->isTypeRegular() // Optional
+            // Alternate method to provide the notification type.
+            // ->notificationType(NotificationType::REGULAR) // Optional
             ->buttons([
                 Button::create('View Invoice', $url)->isTypeWebUrl(),
                 Button::create('Call Us for Support!', '+1(212)555-2368')->isTypePhoneNumber(),
@@ -88,36 +94,43 @@ The notification will be sent from your Facebook page, whose page token you have
 ![Laravel Facebook Notification Example](https://cloud.githubusercontent.com/assets/1915268/17666125/58d6b66c-631c-11e6-9380-0400832b2e48.png)
 
 #### Message Examples
+
 ##### Basic Text Message
+
 Send a basic text message to a user
 ```php
 return FacebookMessage::create('You have just paid your monthly fee! Thanks')
-->to($this->user->fb_messenger_id);
+    ->to($this->user->fb_messenger_id);
 ```
 ##### Attachment Message
+
 Send a file attachment to a user (Example is sending a pdf invoice)
+
 ```php
 return FacebookMessage::create()
-->attach(AttachmentType::FILE, url('invoices/'.$this->invoice->id))
-->to($this->user->fb_messenger_id);
+    ->attach(AttachmentType::FILE, url('invoices/'.$this->invoice->id))
+    ->to($this->user->fb_messenger_id);
 ```
 
 ##### Generic (Card Carousel) Message
+
 Send a set of cards / items to a user displayed in a carousel (Example is sending a set of links). Note you can also add up to three buttons per card
+
 ```php
 return FacebookMessage::create()
-->cards([
-    Card::create('Card No.1 Title')
-    ->subtitle('An item description')
-    ->url('items/'.$this->item[0]->id)
-    ->image('items/'.$this->item[0]->id.'/image'),
-    Card::create('Card No.2 Title')
-    ->subtitle('An item description')
-    ->url('items/'.$this->item[1]->id)
-    ->image('items/'.$this->item[1]->id.'/image')
-    //could add buttons using ->buttons($array of Button)
-])
-->to($this->user->fb_messenger_id);
+    ->to($this->user->fb_messenger_id) // Optional
+    ->cards([
+        Card::create('Card No.1 Title')
+            ->subtitle('An item description')
+            ->url('items/'.$this->item[0]->id)
+            ->image('items/'.$this->item[0]->id.'/image'),
+        
+        Card::create('Card No.2 Title')
+            ->subtitle('An item description')
+            ->url('items/'.$this->item[1]->id)
+            ->image('items/'.$this->item[1]->id.'/image')
+        // could add buttons using ->buttons($array of Button)
+    ]); 
 ```
 
 ### Routing a message
@@ -140,12 +153,18 @@ public function routeNotificationForFacebook()
 
 ### Available Message methods
 
-- `to($pageScopedIdOrPhoneNumber, $type)`: (string) Recipient's page-scoped User `id`, `phone_number`, `user_ref`, `post_id` or `comment_id` (as one of the supported types). Phone number supported format `+1(212)555-2368`. **NOTE:** Sending a message to phone numbers requires the `pages_messaging_phone_number` permission. Refer [docs](https://developers.facebook.com/docs/messenger-platform/send-api-reference#phone_number) for more information.
+- `to($recipient, $type)`: (string|array) Recipient's page-scoped User `id`, `phone_number`, `user_ref`, `post_id` or `comment_id` (as one of the supported types - Use `Enums\RecipientType` to make it easier). Phone number supported format `+1(212)555-2368`. **NOTE:** Sending a message to phone numbers requires the `pages_messaging_phone_number` permission. Refer [docs](https://developers.facebook.com/docs/messenger-platform/send-api-reference#phone_number) for more information.
 - `text('')`: (string) Notification message.
+- `isResponse()`: Set `messaging_type` as `RESPONSE`.
+- `isUpdate()`: (default) Set `messaging_type` as `UPDATE`.
+- `isMessageTag($messageTag)`: (string) Set `messaging_type` as `MESSAGE_TAG`, you can refer and make use of the `NotificationChannels\Facebook\Enums\MessageTag` to make it easier to work with the message tag.
 - `attach($attachment_type, $url)`: (AttachmentType, string) An attachment type (IMAGE, AUDIO, VIDEO, FILE) and the url of this attachment
 - `buttons($buttons = [])`: (array) An array of "Call to Action" buttons (Created using `NotificationChannels\Facebook\Components\Button::create()`). You can add up to 3 buttons of one of the following types: `web_url`, `postback` or `phone_number`. See Button methods below for more details.
 - `cards($cards = [])`: (array) An array of item cards to be displayed in a carousel (Created using `NotificationChannels\Facebook\Components\Card::create()`). You can add up to 10 cards. See Card methods below for more details.
 - `notificationType('')`: (string) Push Notification type: `REGULAR` will emit a sound/vibration and a phone notification; `SILENT_PUSH` will just emit a phone notification, `NO_PUSH` will not emit either. You can make use of `NotificationType::REGULAR`, `NotificationType::SILENT_PUSH` and `NotificationType::NO_PUSH` to make it easier to work with the type. This is an optional method, defaults to `REGULAR` type.
+- `isTypeRegular()`: Helper method to create a notification type: `REGULAR`.
+- `isTypeSilentPush()`: Helper method to create a notification type: `SILENT_PUSH`.
+- `isTypeNoPush()`: Helper method to create a notification type: `NO_PUSH`.
 
 ### Available Button methods
 
