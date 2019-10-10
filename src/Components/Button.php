@@ -62,7 +62,7 @@ class Button implements JsonSerializable
      */
     public function title(string $title): self
     {
-        if ($this->isNotSetOrEmpty($title)) {
+        if (blank($title)) {
             throw CouldNotCreateButton::titleNotProvided();
         }
 
@@ -85,7 +85,7 @@ class Button implements JsonSerializable
      */
     public function url(string $url): self
     {
-        if ($this->isNotSetOrEmpty($url)) {
+        if (blank($url)) {
             throw CouldNotCreateButton::urlNotProvided();
         }
 
@@ -107,7 +107,7 @@ class Button implements JsonSerializable
      */
     public function phone(string $phone): self
     {
-        if ($this->isNotSetOrEmpty($phone)) {
+        if (blank($phone)) {
             throw CouldNotCreateButton::phoneNumberNotProvided();
         }
 
@@ -129,7 +129,7 @@ class Button implements JsonSerializable
      */
     public function postback(array $postback): self
     {
-        if ($this->isNotSetOrEmpty($postback)) {
+        if (blank($postback)) {
             throw CouldNotCreateButton::postbackNotProvided();
         }
 
@@ -211,7 +211,7 @@ class Button implements JsonSerializable
      */
     protected function makePayload($data): self
     {
-        if ($this->isNotSetOrEmpty($data)) {
+        if (blank($data)) {
             return $this;
         }
 
@@ -257,17 +257,5 @@ class Button implements JsonSerializable
     public function jsonSerialize()
     {
         return $this->toArray();
-    }
-
-    /**
-     * Determine if it's not set or is empty.
-     *
-     * @param $var
-     *
-     * @return bool
-     */
-    protected function isNotSetOrEmpty($var): bool
-    {
-        return !isset($var) || empty($var);
     }
 }
