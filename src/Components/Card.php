@@ -3,8 +3,8 @@
 namespace NotificationChannels\Facebook\Components;
 
 use JsonSerializable;
-use NotificationChannels\Facebook\Traits\HasButtons;
 use NotificationChannels\Facebook\Exceptions\CouldNotCreateCard;
+use NotificationChannels\Facebook\Traits\HasButtons;
 
 /**
  * Class Card.

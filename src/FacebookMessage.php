@@ -3,12 +3,12 @@
 namespace NotificationChannels\Facebook;
 
 use JsonSerializable;
-use NotificationChannels\Facebook\Traits\HasButtons;
-use NotificationChannels\Facebook\Enums\MessagingType;
-use NotificationChannels\Facebook\Enums\RecipientType;
 use NotificationChannels\Facebook\Enums\AttachmentType;
+use NotificationChannels\Facebook\Enums\MessagingType;
 use NotificationChannels\Facebook\Enums\NotificationType;
+use NotificationChannels\Facebook\Enums\RecipientType;
 use NotificationChannels\Facebook\Exceptions\CouldNotCreateMessage;
+use NotificationChannels\Facebook\Traits\HasButtons;
 
 /**
  * Class FacebookMessage.

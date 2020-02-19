@@ -2,8 +2,8 @@
 
 namespace NotificationChannels\Facebook\Components;
 
-use JsonSerializable;
 use Illuminate\Support\Str;
+use JsonSerializable;
 use NotificationChannels\Facebook\Enums\ButtonType;
 use NotificationChannels\Facebook\Exceptions\CouldNotCreateButton;
 
