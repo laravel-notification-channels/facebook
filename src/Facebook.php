@@ -134,7 +134,7 @@ class Facebook
 
         $url = "https://graph.facebook.com/v{$this->graphApiVersion}/{$endpoint}?access_token={$this->token}";
 
-        if($this->secret) {
+        if ($this->secret) {
             $appsecret_proof = hash_hmac('sha256', $this->token, $this->secret);
 
             $url .= "&appsecret_proof={$appsecret_proof}";
