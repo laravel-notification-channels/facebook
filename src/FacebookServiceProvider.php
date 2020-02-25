@@ -19,7 +19,9 @@ class FacebookServiceProvider extends ServiceProvider
             ->give(static function () {
                 $facebook = new Facebook(config('services.facebook.page-token'));
 
-                return $facebook->setGraphApiVersion(config('services.facebook.version', '4.0'));
+                return $facebook
+                    ->setGraphApiVersion(config('services.facebook.version', '4.0'))
+                    ->setSecret(config('services.facebook.app-secret'));
             });
     }
 }
