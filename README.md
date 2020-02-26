@@ -42,9 +42,9 @@ Next we need to add this token to our Laravel configurations. Create a new Faceb
     'page-token' => env('FACEBOOK_PAGE_TOKEN', 'YOUR PAGE TOKEN HERE'),
     
     // Optional - Omit this if you want to use default version.
-    'version' => env('FACEBOOK_GRAPH_API_VERSION', '4.0')
+    'version'    => env('FACEBOOK_GRAPH_API_VERSION', '4.0')
     
-    // Optional - If set, the appsecret_proof will be send to verify your page-token
+    // Optional - If set, the appsecret_proof will be sent to verify your page-token.
     'app-secret' => env('FACEBOOK_APP_SECRET', '')
 ],
 ...
