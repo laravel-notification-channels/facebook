@@ -20,6 +20,9 @@ class Facebook
     /** @var string|null Page Token. */
     protected $token;
 
+    /** @var string|null App Secret */
+    protected $secret;
+
     /** @var string Default Graph API Version */
     protected $graphApiVersion = '4.0';
 
@@ -44,6 +47,20 @@ class Facebook
     public function setGraphApiVersion($graphApiVersion): self
     {
         $this->graphApiVersion = $graphApiVersion;
+
+        return $this;
+    }
+
+    /**
+     * Set App Secret to generate appsecret_proof.
+     *
+     * @param string $secret
+     *
+     * @return Facebook
+     */
+    public function setSecret($secret = null): self
+    {
+        $this->secret = $secret;
 
         return $this;
     }
@@ -116,6 +133,12 @@ class Facebook
         }
 
         $url = "https://graph.facebook.com/v{$this->graphApiVersion}/{$endpoint}?access_token={$this->token}";
+
+        if ($this->secret) {
+            $appsecret_proof = hash_hmac('sha256', $this->token, $this->secret);
+
+            $url .= "&appsecret_proof={$appsecret_proof}";
+        }
 
         try {
             return $this->httpClient()->request($method, $url, $options);
