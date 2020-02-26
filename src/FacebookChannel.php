@@ -54,7 +54,7 @@ class FacebookChannel
         }
 
         $response = $this->fb->send($message->toArray());
-        
+
         return json_decode($response->getBody()->getContents(), true);
     }
 }
