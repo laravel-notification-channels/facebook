@@ -31,11 +31,13 @@ class FacebookChannel
      * @param  mixed         $notifiable
      * @param  Notification  $notification
      *
+     * @return array
+     *
      * @throws CouldNotCreateMessage
      * @throws CouldNotSendNotification
      * @throws GuzzleException
      */
-    public function send($notifiable, Notification $notification): void
+    public function send($notifiable, Notification $notification): array
     {
         $message = $notification->toFacebook($notifiable);
 
@@ -51,6 +53,8 @@ class FacebookChannel
             $message->to($to);
         }
 
-        $this->fb->send($message->toArray());
+        $response = $this->fb->send($message->toArray());
+        
+        return json_decode($response->getBody()->getContents(), true);
     }
 }
