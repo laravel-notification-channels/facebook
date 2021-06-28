@@ -100,7 +100,7 @@ class Card implements JsonSerializable
     public function default(string $url): self
     {
         $this->payload['default_action']['type'] = 'web_url';
-        $this->payload['default_action']['url'] = 'url';
+        $this->payload['default_action']['url'] = $url;
         $this->payload['default_action']['webview_height_ratio'] = 'tall';
 
         return $this;
