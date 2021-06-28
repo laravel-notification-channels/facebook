@@ -50,6 +50,9 @@ class FacebookMessage implements JsonSerializable
     /** @var string Message tag used with messaging type MESSAGE_TAG */
     protected $messageTag;
 
+    /** @var string */
+    protected $imageAspectRatio = 'square';
+
     /**
      * @param  string  $text
      *
@@ -373,6 +376,7 @@ class FacebookMessage implements JsonSerializable
         $message['notification_type'] = $this->notificationType;
         $message['message']['attachment']['type'] = 'template';
         $message['message']['attachment']['payload']['template_type'] = 'generic';
+        $message['message']['attachment']['payload']['image_aspect_ratio'] = $this->imageAspectRatio;
         $message['message']['attachment']['payload']['elements'] = $this->cards;
         $message['messaging_type'] = $this->messagingType;
 
