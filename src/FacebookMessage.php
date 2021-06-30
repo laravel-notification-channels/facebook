@@ -4,6 +4,7 @@ namespace NotificationChannels\Facebook;
 
 use JsonSerializable;
 use NotificationChannels\Facebook\Enums\AttachmentType;
+use NotificationChannels\Facebook\Enums\ImageAspectRatioType;
 use NotificationChannels\Facebook\Enums\MessagingType;
 use NotificationChannels\Facebook\Enums\NotificationType;
 use NotificationChannels\Facebook\Enums\RecipientType;
@@ -47,11 +48,14 @@ class FacebookMessage implements JsonSerializable
     /** @var bool */
     protected $hasText = false;
 
+    /** @var bool There is card with 'image_url' in attachment */
+    protected $hasImageUrl = false;
+
     /** @var string Message tag used with messaging type MESSAGE_TAG */
     protected $messageTag;
 
-    /** @var string */
-    protected $imageAspectRatio = 'square';
+    /** @var string The aspect ratio for */
+    protected $imageAspectRatio = ImageAspectRatioType::HORIZONTAL;
 
     /**
      * @param  string  $text
@@ -176,6 +180,33 @@ class FacebookMessage implements JsonSerializable
         }
 
         $this->notificationType = $notificationType;
+
+        return $this;
+    }
+
+    public function imageAspectRatio(string $imageAspectRatio): self
+    {
+        $imageAspectRatios = [
+            ImageAspectRatioType::SQUARE,
+            ImageAspectRatioType::HORIZONTAL,
+        ];
+
+        if (! in_array($imageAspectRatio, $imageAspectRatios, false)) {
+            throw CouldNotCreateMessage::invalidImageAspectRatio();
+        }
+
+        foreach ($this->cards as $card) {
+            if (array_key_exists('image_url', $card->toArray())) {
+                $this->hasImageUrl = true;
+                break;
+            }
+        }
+
+        if (! $this->hasImageUrl) {
+            return $this;
+        }
+
+        $this->imageAspectRatio = $imageAspectRatio;
 
         return $this;
     }
@@ -376,9 +407,12 @@ class FacebookMessage implements JsonSerializable
         $message['notification_type'] = $this->notificationType;
         $message['message']['attachment']['type'] = 'template';
         $message['message']['attachment']['payload']['template_type'] = 'generic';
-        $message['message']['attachment']['payload']['image_aspect_ratio'] = $this->imageAspectRatio;
         $message['message']['attachment']['payload']['elements'] = $this->cards;
         $message['messaging_type'] = $this->messagingType;
+
+        if ($this->hasImageUrl) {
+            $message['message']['attachment']['payload']['image_aspect_ratio'] = $this->imageAspectRatio;
+        }
 
         if (filled($this->messageTag)) {
             $message['tag'] = $this->messageTag;
