@@ -79,7 +79,7 @@ class Card implements JsonSerializable
     /**
      * Set Card Image Url.
      *
-     * @param  string  $imageUrl  Image ratio should be 1.91:1
+     * @param  string  $imageUrl  Default image ratio is 1.91:1
      *
      * @return $this
      */
