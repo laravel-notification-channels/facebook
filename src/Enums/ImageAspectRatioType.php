@@ -12,11 +12,11 @@ namespace NotificationChannels\Facebook\Enums;
 class ImageAspectRatioType
 {
     /**
-     * Aspect ratio of image should be 1.91:1
+     * Aspect ratio of image should be 1.91:1.
      */
     public const HORIZONTAL = 'horizontal';
     /**
-     * Aspect ratio of image should be 1:1
+     * Aspect ratio of image should be 1:1.
      */
     public const SQUARE = 'square';
 }
