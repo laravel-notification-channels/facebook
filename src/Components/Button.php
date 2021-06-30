@@ -122,18 +122,18 @@ class Button implements JsonSerializable
     }
 
     /**
-     * @param  array  $postback
+     * @param  $postback
      *
-     * @throws CouldNotCreateButton
      * @return $this
+     * @throws CouldNotCreateButton|\JsonException
      */
-    public function postback(array $postback): self
+    public function postback($postback): self
     {
         if (blank($postback)) {
             throw CouldNotCreateButton::postbackNotProvided();
         }
 
-        $this->payload['payload'] = json_encode($postback);
+        $this->payload['payload'] = is_string($postback) ? $postback : json_encode($postback, JSON_THROW_ON_ERROR);
         $this->isTypePostback();
 
         return $this;
