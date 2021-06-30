@@ -165,6 +165,7 @@ public function routeNotificationForFacebook()
 - `buttons($buttons = [])`: (array) An array of "Call to Action" buttons (Created using `NotificationChannels\Facebook\Components\Button::create()`). You can add up to 3 buttons of one of the following types: `web_url`, `postback` or `phone_number`. See Button methods below for more details.
 - `cards($cards = [])`: (array) An array of item cards to be displayed in a carousel (Created using `NotificationChannels\Facebook\Components\Card::create()`). You can add up to 10 cards. See Card methods below for more details.
 - `notificationType('')`: (string) Push Notification type: `REGULAR` will emit a sound/vibration and a phone notification; `SILENT_PUSH` will just emit a phone notification, `NO_PUSH` will not emit either. You can make use of `NotificationType::REGULAR`, `NotificationType::SILENT_PUSH` and `NotificationType::NO_PUSH` to make it easier to work with the type. This is an optional method, defaults to `REGULAR` type.
+- `imageAspectRatio('')`: (string) Image Aspect Ratio if Card with `image_url` present. You can use of `ImageAspectRatioType::SQUARE` or  `ImageAspectRatioType::HORIZONTAL`. This is an optional method, defaults to `ImageAspectRatioType::HORIZONTAL` aspect ratio (image should be 1.91:1).
 - `isTypeRegular()`: Helper method to create a notification type: `REGULAR`.
 - `isTypeSilentPush()`: Helper method to create a notification type: `SILENT_PUSH`.
 - `isTypeNoPush()`: Helper method to create a notification type: `NO_PUSH`.
