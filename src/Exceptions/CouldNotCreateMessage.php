@@ -20,6 +20,16 @@ class CouldNotCreateMessage extends Exception
     }
 
     /**
+     * Thrown when invalid image aspect ratio provided.
+     *
+     * @return static
+     */
+    public static function invalidImageAspectRatio(): self
+    {
+        return new static('Image Aspect Ratio provided is invalid.');
+    }
+
+    /**
      * Thrown when invalid notification type provided.
      *
      * @return static
