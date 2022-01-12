@@ -30,9 +30,6 @@ class FacebookMessage implements JsonSerializable
     /** @var string Notification Type */
     public $notificationType = NotificationType::REGULAR;
 
-    /** @var string Messaging Type. Defaults to UPDATE */
-    protected $messagingType = MessagingType::UPDATE;
-
     /** @var array Generic Template Cards (items) */
     public $cards = [];
 
@@ -41,6 +38,9 @@ class FacebookMessage implements JsonSerializable
 
     /** @var string Attachment URL */
     public $attachmentUrl;
+
+    /** @var string Messaging Type. Defaults to UPDATE */
+    protected $messagingType = MessagingType::UPDATE;
 
     /** @var bool */
     protected $hasAttachment = false;
@@ -58,9 +58,18 @@ class FacebookMessage implements JsonSerializable
     protected $imageAspectRatio = ImageAspectRatioType::HORIZONTAL;
 
     /**
-     * @param  string  $text
-     *
      * @throws CouldNotCreateMessage
+     */
+    public function __construct(string $text = '')
+    {
+        if ('' !== $text) {
+            $this->text($text);
+        }
+    }
+
+    /**
+     * @throws CouldNotCreateMessage
+     *
      * @return static
      */
     public static function create(string $text = ''): self
@@ -69,26 +78,14 @@ class FacebookMessage implements JsonSerializable
     }
 
     /**
-     * @param  string  $text
-     *
-     * @throws CouldNotCreateMessage
-     */
-    public function __construct(string $text = '')
-    {
-        if ($text !== '') {
-            $this->text($text);
-        }
-    }
-
-    /**
      * Recipient's PSID or Phone Number.
      *
      * The id must be an ID that was retrieved through the
      * Messenger entry points or through the Messenger webhooks.
      *
-     * @param  string|array  $recipient  ID of recipient or Phone number of the recipient with the format
-     *     +1(212)555-2368
-     * @param  string        $type  Recipient Type: id, user_ref, phone_number, post_id, comment_id.
+     * @param array|string $recipient ID of recipient or Phone number of the recipient with the format
+     *                                +1(212)555-2368
+     * @param string       $type      recipient Type: id, user_ref, phone_number, post_id, comment_id
      *
      * @return $this
      */
@@ -106,8 +103,6 @@ class FacebookMessage implements JsonSerializable
 
     /**
      * Notification text.
-     *
-     * @param  string  $text
      *
      * @throws CouldNotCreateMessage
      *
@@ -128,9 +123,6 @@ class FacebookMessage implements JsonSerializable
     /**
      * Add Attachment.
      *
-     * @param  string  $attachmentType
-     * @param  string  $url
-     *
      * @throws CouldNotCreateMessage
      *
      * @return $this
@@ -144,7 +136,7 @@ class FacebookMessage implements JsonSerializable
             AttachmentType::AUDIO,
         ];
 
-        if (! in_array($attachmentType, $attachmentTypes, false)) {
+        if (!in_array($attachmentType, $attachmentTypes, false)) {
             throw CouldNotCreateMessage::invalidAttachmentType();
         }
 
@@ -162,9 +154,10 @@ class FacebookMessage implements JsonSerializable
     /**
      * Push notification type.
      *
-     * @param  string  $notificationType  Possible values: REGULAR, SILENT_PUSH, NO_PUSH
+     * @param string $notificationType Possible values: REGULAR, SILENT_PUSH, NO_PUSH
      *
      * @throws CouldNotCreateMessage
+     *
      * @return $this
      */
     public function notificationType(string $notificationType): self
@@ -175,7 +168,7 @@ class FacebookMessage implements JsonSerializable
             NotificationType::NO_PUSH,
         ];
 
-        if (! in_array($notificationType, $notificationTypes, false)) {
+        if (!in_array($notificationType, $notificationTypes, false)) {
             throw CouldNotCreateMessage::invalidNotificationType();
         }
 
@@ -191,18 +184,19 @@ class FacebookMessage implements JsonSerializable
             ImageAspectRatioType::HORIZONTAL,
         ];
 
-        if (! in_array($imageAspectRatio, $imageAspectRatios, false)) {
+        if (!in_array($imageAspectRatio, $imageAspectRatios, false)) {
             throw CouldNotCreateMessage::invalidImageAspectRatio();
         }
 
         foreach ($this->cards as $card) {
             if (array_key_exists('image_url', $card->toArray())) {
                 $this->hasImageUrl = true;
+
                 break;
             }
         }
 
-        if (! $this->hasImageUrl) {
+        if (!$this->hasImageUrl) {
             return $this;
         }
 
@@ -289,9 +283,8 @@ class FacebookMessage implements JsonSerializable
     /**
      * Add up to 10 cards to be displayed in a carousel.
      *
-     * @param  array  $cards
-     *
      * @throws CouldNotCreateMessage
+     *
      * @return $this
      */
     public function cards(array $cards): self
@@ -307,18 +300,17 @@ class FacebookMessage implements JsonSerializable
 
     /**
      * Determine if user id is not given.
-     *
-     * @return bool
      */
     public function toNotGiven(): bool
     {
-        return ! isset($this->recipient);
+        return !isset($this->recipient);
     }
 
     /**
      * Convert the object into something JSON serializable.
      *
      * @throws CouldNotCreateMessage
+     *
      * @return mixed
      */
     public function jsonSerialize()
@@ -330,7 +322,6 @@ class FacebookMessage implements JsonSerializable
      * Returns message payload for JSON conversion.
      *
      * @throws CouldNotCreateMessage
-     * @return array
      */
     public function toArray(): array
     {
@@ -356,8 +347,6 @@ class FacebookMessage implements JsonSerializable
 
     /**
      * Returns message for simple text message.
-     *
-     * @return array
      */
     protected function textMessageToArray(): array
     {
@@ -376,8 +365,6 @@ class FacebookMessage implements JsonSerializable
 
     /**
      * Returns message for attachment message.
-     *
-     * @return array
      */
     protected function attachmentMessageToArray(): array
     {
@@ -397,8 +384,6 @@ class FacebookMessage implements JsonSerializable
 
     /**
      * Returns message for Generic Template message.
-     *
-     * @return array
      */
     protected function genericMessageToArray(): array
     {
@@ -423,8 +408,6 @@ class FacebookMessage implements JsonSerializable
 
     /**
      * Returns message for Button Template message.
-     *
-     * @return array
      */
     protected function buttonMessageToArray(): array
     {

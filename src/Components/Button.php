@@ -18,32 +18,16 @@ class Button implements JsonSerializable
     /** @var string Button Type */
     protected $type;
 
-    /** @var string|array Button URL, Postback Data or Phone Number */
+    /** @var array|string Button URL, Postback Data or Phone Number */
     protected $data;
 
     /** @var array Payload */
     protected $payload = [];
 
     /**
-     * Create a button.
-     *
-     * @param  string        $title
-     * @param  string|array  $data
-     * @param  string        $type
-     *
-     * @return static
-     */
-    public static function create(string $title = '', $data = null, string $type = ButtonType::WEB_URL): self
-    {
-        return new static($title, $data, $type);
-    }
-
-    /**
      * Button Constructor.
      *
-     * @param  string        $title
-     * @param  string|array  $data
-     * @param  string        $type
+     * @param array|string $data
      */
     public function __construct(string $title = '', $data = null, string $type = ButtonType::WEB_URL)
     {
@@ -53,11 +37,22 @@ class Button implements JsonSerializable
     }
 
     /**
+     * Create a button.
+     *
+     * @param array|string $data
+     *
+     * @return static
+     */
+    public static function create(string $title = '', $data = null, string $type = ButtonType::WEB_URL): self
+    {
+        return new static($title, $data, $type);
+    }
+
+    /**
      * Set Button Title.
      *
-     * @param  string  $title
-     *
      * @throws CouldNotCreateButton
+     *
      * @return $this
      */
     public function title(string $title): self
@@ -78,9 +73,8 @@ class Button implements JsonSerializable
     /**
      * Set a URL for the button.
      *
-     * @param  string  $url
-     *
      * @throws CouldNotCreateButton
+     *
      * @return $this
      */
     public function url(string $url): self
@@ -89,7 +83,7 @@ class Button implements JsonSerializable
             throw CouldNotCreateButton::urlNotProvided();
         }
 
-        if (! filter_var($url, FILTER_VALIDATE_URL)) {
+        if (!filter_var($url, FILTER_VALIDATE_URL)) {
             throw CouldNotCreateButton::invalidUrlProvided($url);
         }
 
@@ -100,9 +94,8 @@ class Button implements JsonSerializable
     }
 
     /**
-     * @param  string  $phone
-     *
      * @throws CouldNotCreateButton
+     *
      * @return $this
      */
     public function phone(string $phone): self
@@ -111,7 +104,7 @@ class Button implements JsonSerializable
             throw CouldNotCreateButton::phoneNumberNotProvided();
         }
 
-        if (is_string($phone) && ! Str::startsWith($phone, '+')) {
+        if (is_string($phone) && !Str::startsWith($phone, '+')) {
             throw CouldNotCreateButton::invalidPhoneNumberProvided($phone);
         }
 
@@ -122,10 +115,11 @@ class Button implements JsonSerializable
     }
 
     /**
-     * @param  $postback
+     * @param $postback
+     *
+     * @throws CouldNotCreateButton|\JsonException
      *
      * @return $this
-     * @throws CouldNotCreateButton|\JsonException
      */
     public function postback($postback): self
     {
@@ -142,7 +136,7 @@ class Button implements JsonSerializable
     /**
      * Set Button Type.
      *
-     * @param  string  $type  Possible Values: "web_url", "postback" or "phone_number". Default: "web_url"
+     * @param string $type Possible Values: "web_url", "postback" or "phone_number". Default: "web_url"
      *
      * @return $this
      */
@@ -190,55 +184,9 @@ class Button implements JsonSerializable
     }
 
     /**
-     * Determine Button Type.
-     *
-     * @param  string  $type
-     *
-     * @return bool
-     */
-    protected function isType(string $type): bool
-    {
-        return isset($this->payload['type']) && $type === $this->payload['type'];
-    }
-
-    /**
-     * Make payload by data and type.
-     *
-     * @param  mixed  $data
-     *
-     * @throws CouldNotCreateButton
-     * @return $this
-     */
-    protected function makePayload($data): self
-    {
-        if (blank($data)) {
-            return $this;
-        }
-
-        switch ($this->payload['type']) {
-            case ButtonType::WEB_URL:
-                $this->url($data);
-                break;
-            case ButtonType::PHONE_NUMBER:
-                $this->phone($data);
-                break;
-            case ButtonType::POSTBACK:
-                $this->postback($data);
-                break;
-        }
-
-        if (isset($this->payload['payload']) && mb_strlen($this->payload['payload']) > 1000) {
-            throw CouldNotCreateButton::payloadLimitExceeded($this->payload['payload']);
-        }
-
-        return $this;
-    }
-
-    /**
      * Builds payload and returns an array.
      *
      * @throws CouldNotCreateButton
-     * @return array
      */
     public function toArray(): array
     {
@@ -252,10 +200,58 @@ class Button implements JsonSerializable
      * Convert the object into something JSON serializable.
      *
      * @throws CouldNotCreateButton
+     *
      * @return mixed
      */
     public function jsonSerialize()
     {
         return $this->toArray();
+    }
+
+    /**
+     * Determine Button Type.
+     */
+    protected function isType(string $type): bool
+    {
+        return isset($this->payload['type']) && $type === $this->payload['type'];
+    }
+
+    /**
+     * Make payload by data and type.
+     *
+     * @param mixed $data
+     *
+     * @throws CouldNotCreateButton
+     *
+     * @return $this
+     */
+    protected function makePayload($data): self
+    {
+        if (blank($data)) {
+            return $this;
+        }
+
+        switch ($this->payload['type']) {
+            case ButtonType::WEB_URL:
+                $this->url($data);
+
+                break;
+
+            case ButtonType::PHONE_NUMBER:
+                $this->phone($data);
+
+                break;
+
+            case ButtonType::POSTBACK:
+                $this->postback($data);
+
+                break;
+        }
+
+        if (isset($this->payload['payload']) && mb_strlen($this->payload['payload']) > 1000) {
+            throw CouldNotCreateButton::payloadLimitExceeded($this->payload['payload']);
+        }
+
+        return $this;
     }
 }

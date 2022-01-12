@@ -17,8 +17,6 @@ class FacebookChannel
 
     /**
      * FacebookChannel constructor.
-     *
-     * @param  Facebook  $fb
      */
     public function __construct(Facebook $fb)
     {
@@ -28,10 +26,7 @@ class FacebookChannel
     /**
      * Send the given notification.
      *
-     * @param  mixed         $notifiable
-     * @param  Notification  $notification
-     *
-     * @return array
+     * @param mixed $notifiable
      *
      * @throws CouldNotCreateMessage
      * @throws CouldNotSendNotification
@@ -46,7 +41,7 @@ class FacebookChannel
         }
 
         if ($message->toNotGiven()) {
-            if (! $to = $notifiable->routeNotificationFor('facebook')) {
+            if (!$to = $notifiable->routeNotificationFor('facebook')) {
                 throw CouldNotCreateMessage::recipientNotProvided();
             }
 

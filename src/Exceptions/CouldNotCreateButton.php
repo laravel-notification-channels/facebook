@@ -52,8 +52,6 @@ class CouldNotCreateButton extends Exception
     /**
      * Thrown when the title characters limit is exceeded.
      *
-     * @param string $title
-     *
      * @return static
      */
     public static function titleLimitExceeded(string $title): self
@@ -68,7 +66,7 @@ class CouldNotCreateButton extends Exception
     /**
      * Thrown when the payload characters limit is exceeded.
      *
-     * @param  mixed  $data
+     * @param mixed $data
      *
      * @return static
      */
@@ -84,8 +82,6 @@ class CouldNotCreateButton extends Exception
     /**
      * Thrown when the URL provided is not valid.
      *
-     * @param string $url
-     *
      * @return static
      */
     public static function invalidUrlProvided(string $url): self
@@ -95,8 +91,6 @@ class CouldNotCreateButton extends Exception
 
     /**
      * Thrown when the phone number provided is of invalid format.
-     *
-     * @param string $phoneNumber
      *
      * @return static
      */

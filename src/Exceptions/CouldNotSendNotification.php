@@ -13,8 +13,6 @@ class CouldNotSendNotification extends Exception
     /**
      * Thrown when there's a bad request and an error is responded.
      *
-     * @param  ClientException  $exception
-     *
      * @return static
      */
     public static function facebookRespondedWithAnError(ClientException $exception): self
@@ -31,8 +29,6 @@ class CouldNotSendNotification extends Exception
     /**
      * Thrown when there's no page token provided.
      *
-     * @param  string  $message
-     *
      * @return static
      */
     public static function facebookPageTokenNotProvided(string $message): self
@@ -42,8 +38,6 @@ class CouldNotSendNotification extends Exception
 
     /**
      * Thrown when we're unable to communicate with Telegram.
-     *
-     * @param  Exception  $exception
      *
      * @return static
      */

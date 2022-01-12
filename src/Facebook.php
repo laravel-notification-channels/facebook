@@ -17,19 +17,15 @@ class Facebook
     /** @var HttpClient HTTP Client */
     protected $http;
 
-    /** @var string|null Page Token. */
+    /** @var null|string Page Token. */
     protected $token;
 
-    /** @var string|null App Secret */
+    /** @var null|string App Secret */
     protected $secret;
 
     /** @var string Default Graph API Version */
     protected $graphApiVersion = '4.0';
 
-    /**
-     * @param  string|null      $token
-     * @param  HttpClient|null  $httpClient
-     */
     public function __construct(string $token = null, HttpClient $httpClient = null)
     {
         $this->token = $token;
@@ -66,23 +62,10 @@ class Facebook
     }
 
     /**
-     * Get HttpClient.
-     *
-     * @return HttpClient
-     */
-    protected function httpClient(): HttpClient
-    {
-        return $this->http ?? new HttpClient();
-    }
-
-    /**
      * Send text message.
-     *
-     * @param  array  $params
      *
      * @throws GuzzleException
      * @throws CouldNotSendNotification
-     * @return ResponseInterface
      */
     public function send(array $params): ResponseInterface
     {
@@ -90,12 +73,8 @@ class Facebook
     }
 
     /**
-     * @param  string  $endpoint
-     * @param  array   $params
-     *
      * @throws GuzzleException
      * @throws CouldNotSendNotification
-     * @return ResponseInterface
      */
     public function get(string $endpoint, array $params = []): ResponseInterface
     {
@@ -103,12 +82,8 @@ class Facebook
     }
 
     /**
-     * @param  string  $endpoint
-     * @param  array   $params
-     *
      * @throws GuzzleException
      * @throws CouldNotSendNotification
-     * @return ResponseInterface
      */
     public function post(string $endpoint, array $params = []): ResponseInterface
     {
@@ -116,14 +91,21 @@ class Facebook
     }
 
     /**
+     * Get HttpClient.
+     */
+    protected function httpClient(): HttpClient
+    {
+        return $this->http ?? new HttpClient();
+    }
+
+    /**
      * Send an API request and return response.
      *
-     * @param  string  $endpoint
-     * @param  array   $options
-     * @param  string  $method
+     * @param string $method
      *
      * @throws GuzzleException
      * @throws CouldNotSendNotification
+     *
      * @return mixed|ResponseInterface
      */
     protected function api(string $endpoint, array $options, $method = 'GET')

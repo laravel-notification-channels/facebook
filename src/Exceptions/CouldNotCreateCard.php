@@ -22,8 +22,6 @@ class CouldNotCreateCard extends Exception
     /**
      * Thrown when the title characters limit is exceeded.
      *
-     * @param  string  $title
-     *
      * @return static
      */
     public static function titleLimitExceeded(string $title): self
@@ -37,8 +35,6 @@ class CouldNotCreateCard extends Exception
 
     /**
      * Thrown when the subtitle characters limit is exceeded.
-     *
-     * @param  string  $title
      *
      * @return static
      */

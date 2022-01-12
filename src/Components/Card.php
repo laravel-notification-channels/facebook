@@ -17,11 +17,22 @@ class Card implements JsonSerializable
     protected $payload = [];
 
     /**
-     * Create a Card.
-     *
-     * @param  string  $title
+     * Create Card constructor.
      *
      * @throws CouldNotCreateCard
+     */
+    public function __construct(string $title = '')
+    {
+        if ('' !== $title) {
+            $this->title($title);
+        }
+    }
+
+    /**
+     * Create a Card.
+     *
+     * @throws CouldNotCreateCard
+     *
      * @return static
      */
     public static function create(string $title = ''): self
@@ -30,25 +41,10 @@ class Card implements JsonSerializable
     }
 
     /**
-     * Create Card constructor.
-     *
-     * @param  string  $title
-     *
-     * @throws CouldNotCreateCard
-     */
-    public function __construct(string $title = '')
-    {
-        if ($title !== '') {
-            $this->title($title);
-        }
-    }
-
-    /**
      * Set Button Title.
      *
-     * @param  string  $title
-     *
      * @throws CouldNotCreateCard
+     *
      * @return $this
      */
     public function title(string $title): self
@@ -65,8 +61,6 @@ class Card implements JsonSerializable
     /**
      * Set Card Item Url.
      *
-     * @param  string  $itemUrl
-     *
      * @return $this
      */
     public function url(string $itemUrl): self
@@ -79,7 +73,7 @@ class Card implements JsonSerializable
     /**
      * Set Card Image Url.
      *
-     * @param  string  $imageUrl  Default image ratio is 1.91:1
+     * @param string $imageUrl Default image ratio is 1.91:1
      *
      * @return $this
      */
@@ -93,9 +87,8 @@ class Card implements JsonSerializable
     /**
      * Set Card Subtitle.
      *
-     * @param  string  $subtitle
-     *
      * @throws CouldNotCreateCard
+     *
      * @return $this
      */
     public function subtitle(string $subtitle): self
@@ -113,11 +106,10 @@ class Card implements JsonSerializable
      * Returns a payload for API request.
      *
      * @throws CouldNotCreateCard
-     * @return array
      */
     public function toArray(): array
     {
-        if (! isset($this->payload['title'])) {
+        if (!isset($this->payload['title'])) {
             throw CouldNotCreateCard::titleNotProvided();
         }
 
@@ -132,6 +124,7 @@ class Card implements JsonSerializable
      * Convert the object into something JSON serializable.
      *
      * @throws CouldNotCreateCard
+     *
      * @return mixed
      */
     public function jsonSerialize()
