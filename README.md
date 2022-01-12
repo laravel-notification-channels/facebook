@@ -1,10 +1,11 @@
 # Facebook Notifications Channel for Laravel
 
-[![Latest Version on Packagist](https://img.shields.io/packagist/v/laravel-notification-channels/facebook.svg?style=flat-square)](https://packagist.org/packages/laravel-notification-channels/facebook)
-[![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE.md)
-[![SensioLabsInsight](https://img.shields.io/sensiolabs/i/70841e16-34aa-496e-91c7-ba49d55841c8.svg?style=flat-square)](https://insight.sensiolabs.com/projects/70841e16-34aa-496e-91c7-ba49d55841c8)
-[![Quality Score](https://img.shields.io/scrutinizer/g/laravel-notification-channels/facebook.svg?style=flat-square)](https://scrutinizer-ci.com/g/laravel-notification-channels/facebook)
-[![Total Downloads](https://img.shields.io/packagist/dt/laravel-notification-channels/facebook.svg?style=flat-square)](https://packagist.org/packages/laravel-notification-channels/facebook)
+[![Join PHP Chat][ico-phpchat]][link-phpchat]
+[![Chat on Telegram][ico-telegram]][link-telegram]
+[![Latest Version on Packagist][ico-version]][link-packagist]
+[![Software License][ico-license]](LICENSE.md)
+[![Quality Score][ico-code-quality]][link-code-quality]
+[![Total Downloads][ico-downloads]][link-packagist]
 
 This package makes it easy to send notifications using the [Facebook Messenger](https://developers.facebook.com/docs/messenger-platform/product-overview) with Laravel.
 
@@ -77,7 +78,7 @@ class InvoicePaid extends Notification
         $url = url('/invoice/' . $this->invoice->id);
 
         return FacebookMessage::create()
-            ->to($this->user->fb_messenger_user_id) // Optional
+            ->to($notifiable->fb_messenger_user_id) // Optional
             ->text('One of your invoices has been paid!')
             ->isUpdate() // Optional
             ->isTypeRegular() // Optional
@@ -103,7 +104,7 @@ The notification will be sent from your Facebook page, whose page token you have
 Send a basic text message to a user
 ```php
 return FacebookMessage::create('You have just paid your monthly fee! Thanks')
-    ->to($this->user->fb_messenger_id);
+    ->to($notifiable->fb_messenger_user_id);
 ```
 ##### Attachment Message
 
@@ -112,7 +113,7 @@ Send a file attachment to a user (Example is sending a pdf invoice)
 ```php
 return FacebookMessage::create()
     ->attach(AttachmentType::FILE, url('invoices/'.$this->invoice->id))
-    ->to($this->user->fb_messenger_id);
+    ->to($notifiable->fb_messenger_user_id);
 ```
 
 ##### Generic (Card Carousel) Message
@@ -121,7 +122,7 @@ Send a set of cards / items to a user displayed in a carousel (Example is sendin
 
 ```php
 return FacebookMessage::create()
-    ->to($this->user->fb_messenger_id) // Optional
+    ->to($notifiable->fb_messenger_user_id) // Optional
     ->cards([
         Card::create('Card No.1 Title')
             ->subtitle('An item description')
@@ -193,9 +194,26 @@ Please see [CONTRIBUTING](CONTRIBUTING.md) for details.
 
 ## Credits
 
-- [Syed Irfaq R.](https://github.com/irazasyed)
-- [All Contributors](../../contributors)
+- [Irfaq Syed][link-author]
+- [All Contributors][link-contributors]
 
 ## License
 
 The MIT License (MIT). Please see [License File](LICENSE.md) for more information.
+
+[ico-phpchat]: https://img.shields.io/badge/Slack-PHP%20Chat-5c6aaa.svg?style=flat-square&logo=slack&labelColor=4A154B
+[ico-telegram]: https://img.shields.io/badge/@PHPChatCo-2CA5E0.svg?style=flat-square&logo=telegram&label=Telegram
+[ico-version]: https://img.shields.io/packagist/v/laravel-notification-channels/facebook.svg?style=flat-square
+[ico-license]: https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square
+[ico-scrutinizer]: https://img.shields.io/scrutinizer/coverage/g/laravel-notification-channels/facebook.svg?style=flat-square
+[ico-code-quality]: https://img.shields.io/scrutinizer/g/laravel-notification-channels/facebook.svg?style=flat-square
+[ico-downloads]: https://img.shields.io/packagist/dt/laravel-notification-channels/facebook.svg?style=flat-square
+
+[link-phpchat]: https://phpchat.co/?ref=laravel-channel-facebook
+[link-telegram]: https://t.me/PHPChatCo
+[link-repo]: https://github.com/laravel-notification-channels/facebook
+[link-packagist]: https://packagist.org/packages/laravel-notification-channels/facebook
+[link-scrutinizer]: https://scrutinizer-ci.com/g/laravel-notification-channels/facebook/code-structure
+[link-code-quality]: https://scrutinizer-ci.com/g/laravel-notification-channels/facebook
+[link-author]: https://github.com/irazasyed
+[link-contributors]: ../../contributors
