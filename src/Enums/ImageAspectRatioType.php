@@ -15,6 +15,7 @@ class ImageAspectRatioType
      * Aspect ratio of image should be 1.91:1.
      */
     public const HORIZONTAL = 'horizontal';
+
     /**
      * Aspect ratio of image should be 1:1.
      */
