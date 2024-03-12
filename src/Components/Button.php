@@ -114,6 +114,8 @@ class Button implements \JsonSerializable
     }
 
     /**
+     * @param mixed $postback
+     *
      * @return $this
      *
      * @throws CouldNotCreateButton|\JsonException

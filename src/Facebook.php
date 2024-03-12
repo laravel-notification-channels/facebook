@@ -34,6 +34,8 @@ class Facebook
 
     /**
      * Set Default Graph API Version.
+     *
+     * @param mixed $graphApiVersion
      */
     public function setGraphApiVersion($graphApiVersion): self
     {

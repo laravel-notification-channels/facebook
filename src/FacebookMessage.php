@@ -267,6 +267,8 @@ class FacebookMessage implements \JsonSerializable
     /**
      * Helper to set messaging type as MESSAGE_TAG.
      *
+     * @param mixed $messageTag
+     *
      * @return $this
      */
     public function isMessageTag($messageTag): self
