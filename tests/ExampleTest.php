@@ -8,6 +8,7 @@ use PHPUnit\Framework\TestCase;
  * Class ExampleTest.
  *
  * @internal
+ *
  * @coversNothing
  */
 class ExampleTest extends TestCase

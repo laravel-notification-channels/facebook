@@ -2,12 +2,10 @@
 
 namespace NotificationChannels\Facebook\Exceptions;
 
-use Exception;
-
 /**
  * Class CouldNotCreateCard.
  */
-class CouldNotCreateCard extends Exception
+class CouldNotCreateCard extends \Exception
 {
     /**
      * Thrown when the button title is not provided.

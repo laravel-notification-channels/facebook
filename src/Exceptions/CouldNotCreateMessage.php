@@ -2,12 +2,10 @@
 
 namespace NotificationChannels\Facebook\Exceptions;
 
-use Exception;
-
 /**
  * Class CouldNotCreateMessage.
  */
-class CouldNotCreateMessage extends Exception
+class CouldNotCreateMessage extends \Exception
 {
     /**
      * Thrown when the message text is not provided.

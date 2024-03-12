@@ -3,14 +3,13 @@
 namespace NotificationChannels\Facebook\Components;
 
 use Illuminate\Support\Str;
-use JsonSerializable;
 use NotificationChannels\Facebook\Enums\ButtonType;
 use NotificationChannels\Facebook\Exceptions\CouldNotCreateButton;
 
 /**
  * Class Button.
  */
-class Button implements JsonSerializable
+class Button implements \JsonSerializable
 {
     /** @var string Button Title */
     protected $title;
@@ -51,9 +50,9 @@ class Button implements JsonSerializable
     /**
      * Set Button Title.
      *
-     * @throws CouldNotCreateButton
-     *
      * @return $this
+     *
+     * @throws CouldNotCreateButton
      */
     public function title(string $title): self
     {
@@ -73,9 +72,9 @@ class Button implements JsonSerializable
     /**
      * Set a URL for the button.
      *
-     * @throws CouldNotCreateButton
-     *
      * @return $this
+     *
+     * @throws CouldNotCreateButton
      */
     public function url(string $url): self
     {
@@ -94,9 +93,9 @@ class Button implements JsonSerializable
     }
 
     /**
-     * @throws CouldNotCreateButton
-     *
      * @return $this
+     *
+     * @throws CouldNotCreateButton
      */
     public function phone(string $phone): self
     {
@@ -115,11 +114,9 @@ class Button implements JsonSerializable
     }
 
     /**
-     * @param $postback
+     * @return $this
      *
      * @throws CouldNotCreateButton|\JsonException
-     *
-     * @return $this
      */
     public function postback($postback): self
     {
@@ -199,9 +196,9 @@ class Button implements JsonSerializable
     /**
      * Convert the object into something JSON serializable.
      *
-     * @throws CouldNotCreateButton
-     *
      * @return mixed
+     *
+     * @throws CouldNotCreateButton
      */
     public function jsonSerialize()
     {
@@ -221,9 +218,9 @@ class Button implements JsonSerializable
      *
      * @param mixed $data
      *
-     * @throws CouldNotCreateButton
-     *
      * @return $this
+     *
+     * @throws CouldNotCreateButton
      */
     protected function makePayload($data): self
     {

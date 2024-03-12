@@ -2,14 +2,13 @@
 
 namespace NotificationChannels\Facebook\Components;
 
-use JsonSerializable;
 use NotificationChannels\Facebook\Exceptions\CouldNotCreateCard;
 use NotificationChannels\Facebook\Traits\HasButtons;
 
 /**
  * Class Card.
  */
-class Card implements JsonSerializable
+class Card implements \JsonSerializable
 {
     use HasButtons;
 
@@ -31,9 +30,9 @@ class Card implements JsonSerializable
     /**
      * Create a Card.
      *
-     * @throws CouldNotCreateCard
-     *
      * @return static
+     *
+     * @throws CouldNotCreateCard
      */
     public static function create(string $title = ''): self
     {
@@ -43,9 +42,9 @@ class Card implements JsonSerializable
     /**
      * Set Button Title.
      *
-     * @throws CouldNotCreateCard
-     *
      * @return $this
+     *
+     * @throws CouldNotCreateCard
      */
     public function title(string $title): self
     {
@@ -87,9 +86,9 @@ class Card implements JsonSerializable
     /**
      * Set Card Subtitle.
      *
-     * @throws CouldNotCreateCard
-     *
      * @return $this
+     *
+     * @throws CouldNotCreateCard
      */
     public function subtitle(string $subtitle): self
     {
@@ -123,9 +122,9 @@ class Card implements JsonSerializable
     /**
      * Convert the object into something JSON serializable.
      *
-     * @throws CouldNotCreateCard
-     *
      * @return mixed
+     *
+     * @throws CouldNotCreateCard
      */
     public function jsonSerialize()
     {

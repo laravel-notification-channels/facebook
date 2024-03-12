@@ -2,13 +2,12 @@
 
 namespace NotificationChannels\Facebook\Exceptions;
 
-use Exception;
 use GuzzleHttp\Exception\ClientException;
 
 /**
  * Class CouldNotSendNotification.
  */
-class CouldNotSendNotification extends Exception
+class CouldNotSendNotification extends \Exception
 {
     /**
      * Thrown when there's a bad request and an error is responded.
@@ -41,7 +40,7 @@ class CouldNotSendNotification extends Exception
      *
      * @return static
      */
-    public static function couldNotCommunicateWithFacebook(Exception $exception): self
+    public static function couldNotCommunicateWithFacebook(\Exception $exception): self
     {
         return new static('The communication with Facebook failed. Reason: '.$exception->getMessage());
     }

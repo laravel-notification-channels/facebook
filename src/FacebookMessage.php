@@ -2,7 +2,6 @@
 
 namespace NotificationChannels\Facebook;
 
-use JsonSerializable;
 use NotificationChannels\Facebook\Enums\AttachmentType;
 use NotificationChannels\Facebook\Enums\ImageAspectRatioType;
 use NotificationChannels\Facebook\Enums\MessagingType;
@@ -14,7 +13,7 @@ use NotificationChannels\Facebook\Traits\HasButtons;
 /**
  * Class FacebookMessage.
  */
-class FacebookMessage implements JsonSerializable
+class FacebookMessage implements \JsonSerializable
 {
     use HasButtons;
 
@@ -68,9 +67,9 @@ class FacebookMessage implements JsonSerializable
     }
 
     /**
-     * @throws CouldNotCreateMessage
-     *
      * @return static
+     *
+     * @throws CouldNotCreateMessage
      */
     public static function create(string $text = ''): self
     {
@@ -104,9 +103,9 @@ class FacebookMessage implements JsonSerializable
     /**
      * Notification text.
      *
-     * @throws CouldNotCreateMessage
-     *
      * @return $this
+     *
+     * @throws CouldNotCreateMessage
      */
     public function text(string $text): self
     {
@@ -123,9 +122,9 @@ class FacebookMessage implements JsonSerializable
     /**
      * Add Attachment.
      *
-     * @throws CouldNotCreateMessage
-     *
      * @return $this
+     *
+     * @throws CouldNotCreateMessage
      */
     public function attach(string $attachmentType, string $url): self
     {
@@ -156,9 +155,9 @@ class FacebookMessage implements JsonSerializable
      *
      * @param string $notificationType Possible values: REGULAR, SILENT_PUSH, NO_PUSH
      *
-     * @throws CouldNotCreateMessage
-     *
      * @return $this
+     *
+     * @throws CouldNotCreateMessage
      */
     public function notificationType(string $notificationType): self
     {
@@ -268,8 +267,6 @@ class FacebookMessage implements JsonSerializable
     /**
      * Helper to set messaging type as MESSAGE_TAG.
      *
-     * @param $messageTag
-     *
      * @return $this
      */
     public function isMessageTag($messageTag): self
@@ -283,9 +280,9 @@ class FacebookMessage implements JsonSerializable
     /**
      * Add up to 10 cards to be displayed in a carousel.
      *
-     * @throws CouldNotCreateMessage
-     *
      * @return $this
+     *
+     * @throws CouldNotCreateMessage
      */
     public function cards(array $cards): self
     {
@@ -309,9 +306,9 @@ class FacebookMessage implements JsonSerializable
     /**
      * Convert the object into something JSON serializable.
      *
-     * @throws CouldNotCreateMessage
-     *
      * @return mixed
+     *
+     * @throws CouldNotCreateMessage
      */
     public function jsonSerialize()
     {

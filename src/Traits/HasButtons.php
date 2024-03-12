@@ -15,9 +15,9 @@ trait HasButtons
     /**
      * Add up to 3 call to action buttons.
      *
-     * @throws CouldNotCreateMessage
-     *
      * @return $this
+     *
+     * @throws CouldNotCreateMessage
      */
     public function buttons(array $buttons = []): self
     {

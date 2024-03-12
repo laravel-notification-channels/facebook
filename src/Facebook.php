@@ -2,7 +2,6 @@
 
 namespace NotificationChannels\Facebook;
 
-use Exception;
 use GuzzleHttp\Client as HttpClient;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\GuzzleException;
@@ -35,10 +34,6 @@ class Facebook
 
     /**
      * Set Default Graph API Version.
-     *
-     * @param $graphApiVersion
-     *
-     * @return Facebook
      */
     public function setGraphApiVersion($graphApiVersion): self
     {
@@ -51,8 +46,6 @@ class Facebook
      * Set App Secret to generate appsecret_proof.
      *
      * @param string $secret
-     *
-     * @return Facebook
      */
     public function setSecret($secret = null): self
     {
@@ -103,10 +96,10 @@ class Facebook
      *
      * @param string $method
      *
+     * @return mixed|ResponseInterface
+     *
      * @throws GuzzleException
      * @throws CouldNotSendNotification
-     *
-     * @return mixed|ResponseInterface
      */
     protected function api(string $endpoint, array $options, $method = 'GET')
     {
@@ -126,7 +119,7 @@ class Facebook
             return $this->httpClient()->request($method, $url, $options);
         } catch (ClientException $exception) {
             throw CouldNotSendNotification::facebookRespondedWithAnError($exception);
-        } catch (Exception $exception) {
+        } catch (\Exception $exception) {
             throw CouldNotSendNotification::couldNotCommunicateWithFacebook($exception);
         }
     }
