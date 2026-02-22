@@ -21,9 +21,7 @@ class FacebookServiceProvider extends ServiceProvider
 
                 return $facebook
                     ->setGraphApiVersion(config('services.facebook.version', '4.0'))
-                    ->setSecret(config('services.facebook.app-secret'))
-                ;
-            })
-        ;
+                    ->setSecret(config('services.facebook.app-secret'));
+            });
     }
 }

@@ -35,7 +35,7 @@ class Facebook
     /**
      * Set Default Graph API Version.
      *
-     * @param mixed $graphApiVersion
+     * @param  mixed  $graphApiVersion
      */
     public function setGraphApiVersion($graphApiVersion): self
     {
@@ -47,7 +47,7 @@ class Facebook
     /**
      * Set App Secret to generate appsecret_proof.
      *
-     * @param string $secret
+     * @param  string  $secret
      */
     public function setSecret($secret = null): self
     {
@@ -90,14 +90,13 @@ class Facebook
      */
     protected function httpClient(): HttpClient
     {
-        return $this->http ?? new HttpClient();
+        return $this->http ?? new HttpClient;
     }
 
     /**
      * Send an API request and return response.
      *
-     * @param string $method
-     *
+     * @param  string  $method
      * @return mixed|ResponseInterface
      *
      * @throws GuzzleException

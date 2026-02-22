@@ -8,9 +8,14 @@ namespace NotificationChannels\Facebook\Enums;
 class RecipientType
 {
     public const ID = 'id';
+
     public const PHONE_NUMBER = 'phone_number';
+
     public const USER_REF = 'user_ref';
+
     public const POST_ID = 'post_id';
+
     public const COMMENT_ID = 'comment_id';
+
     public const THREAD_KEY = 'thread_key';
 }

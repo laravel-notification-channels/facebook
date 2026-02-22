@@ -64,8 +64,7 @@ class CouldNotCreateButton extends \Exception
     /**
      * Thrown when the payload characters limit is exceeded.
      *
-     * @param mixed $data
-     *
+     * @param  mixed  $data
      * @return static
      */
     public static function payloadLimitExceeded($data): self

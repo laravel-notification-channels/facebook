@@ -61,7 +61,7 @@ class FacebookMessage implements \JsonSerializable
      */
     public function __construct(string $text = '')
     {
-        if ('' !== $text) {
+        if ($text !== '') {
             $this->text($text);
         }
     }
@@ -82,10 +82,9 @@ class FacebookMessage implements \JsonSerializable
      * The id must be an ID that was retrieved through the
      * Messenger entry points or through the Messenger webhooks.
      *
-     * @param array|string $recipient ID of recipient or Phone number of the recipient with the format
-     *                                +1(212)555-2368
-     * @param string       $type      recipient Type: id, user_ref, phone_number, post_id, comment_id
-     *
+     * @param  array|string  $recipient  ID of recipient or Phone number of the recipient with the format
+     *                                   +1(212)555-2368
+     * @param  string  $type  recipient Type: id, user_ref, phone_number, post_id, comment_id
      * @return $this
      */
     public function to($recipient, string $type = RecipientType::ID): self
@@ -135,7 +134,7 @@ class FacebookMessage implements \JsonSerializable
             AttachmentType::AUDIO,
         ];
 
-        if (!in_array($attachmentType, $attachmentTypes, false)) {
+        if (! in_array($attachmentType, $attachmentTypes, false)) {
             throw CouldNotCreateMessage::invalidAttachmentType();
         }
 
@@ -153,8 +152,7 @@ class FacebookMessage implements \JsonSerializable
     /**
      * Push notification type.
      *
-     * @param string $notificationType Possible values: REGULAR, SILENT_PUSH, NO_PUSH
-     *
+     * @param  string  $notificationType  Possible values: REGULAR, SILENT_PUSH, NO_PUSH
      * @return $this
      *
      * @throws CouldNotCreateMessage
@@ -167,7 +165,7 @@ class FacebookMessage implements \JsonSerializable
             NotificationType::NO_PUSH,
         ];
 
-        if (!in_array($notificationType, $notificationTypes, false)) {
+        if (! in_array($notificationType, $notificationTypes, false)) {
             throw CouldNotCreateMessage::invalidNotificationType();
         }
 
@@ -183,7 +181,7 @@ class FacebookMessage implements \JsonSerializable
             ImageAspectRatioType::HORIZONTAL,
         ];
 
-        if (!in_array($imageAspectRatio, $imageAspectRatios, false)) {
+        if (! in_array($imageAspectRatio, $imageAspectRatios, false)) {
             throw CouldNotCreateMessage::invalidImageAspectRatio();
         }
 
@@ -195,7 +193,7 @@ class FacebookMessage implements \JsonSerializable
             }
         }
 
-        if (!$this->hasImageUrl) {
+        if (! $this->hasImageUrl) {
             return $this;
         }
 
@@ -267,8 +265,7 @@ class FacebookMessage implements \JsonSerializable
     /**
      * Helper to set messaging type as MESSAGE_TAG.
      *
-     * @param mixed $messageTag
-     *
+     * @param  mixed  $messageTag
      * @return $this
      */
     public function isMessageTag($messageTag): self
@@ -302,7 +299,7 @@ class FacebookMessage implements \JsonSerializable
      */
     public function toNotGiven(): bool
     {
-        return !isset($this->recipient);
+        return ! isset($this->recipient);
     }
 
     /**

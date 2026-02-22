@@ -22,7 +22,7 @@ class Card implements \JsonSerializable
      */
     public function __construct(string $title = '')
     {
-        if ('' !== $title) {
+        if ($title !== '') {
             $this->title($title);
         }
     }
@@ -72,8 +72,7 @@ class Card implements \JsonSerializable
     /**
      * Set Card Image Url.
      *
-     * @param string $imageUrl Default image ratio is 1.91:1
-     *
+     * @param  string  $imageUrl  Default image ratio is 1.91:1
      * @return $this
      */
     public function image(string $imageUrl): self
@@ -108,7 +107,7 @@ class Card implements \JsonSerializable
      */
     public function toArray(): array
     {
-        if (!isset($this->payload['title'])) {
+        if (! isset($this->payload['title'])) {
             throw CouldNotCreateCard::titleNotProvided();
         }
 

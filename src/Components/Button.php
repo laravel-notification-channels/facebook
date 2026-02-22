@@ -26,7 +26,7 @@ class Button implements \JsonSerializable
     /**
      * Button Constructor.
      *
-     * @param array|string $data
+     * @param  array|string  $data
      */
     public function __construct(string $title = '', $data = null, string $type = ButtonType::WEB_URL)
     {
@@ -38,8 +38,7 @@ class Button implements \JsonSerializable
     /**
      * Create a button.
      *
-     * @param array|string $data
-     *
+     * @param  array|string  $data
      * @return static
      */
     public static function create(string $title = '', $data = null, string $type = ButtonType::WEB_URL): self
@@ -82,7 +81,7 @@ class Button implements \JsonSerializable
             throw CouldNotCreateButton::urlNotProvided();
         }
 
-        if (!filter_var($url, FILTER_VALIDATE_URL)) {
+        if (! filter_var($url, FILTER_VALIDATE_URL)) {
             throw CouldNotCreateButton::invalidUrlProvided($url);
         }
 
@@ -103,7 +102,7 @@ class Button implements \JsonSerializable
             throw CouldNotCreateButton::phoneNumberNotProvided();
         }
 
-        if (is_string($phone) && !Str::startsWith($phone, '+')) {
+        if (is_string($phone) && ! Str::startsWith($phone, '+')) {
             throw CouldNotCreateButton::invalidPhoneNumberProvided($phone);
         }
 
@@ -114,8 +113,7 @@ class Button implements \JsonSerializable
     }
 
     /**
-     * @param mixed $postback
-     *
+     * @param  mixed  $postback
      * @return $this
      *
      * @throws CouldNotCreateButton|\JsonException
@@ -135,8 +133,7 @@ class Button implements \JsonSerializable
     /**
      * Set Button Type.
      *
-     * @param string $type Possible Values: "web_url", "postback" or "phone_number". Default: "web_url"
-     *
+     * @param  string  $type  Possible Values: "web_url", "postback" or "phone_number". Default: "web_url"
      * @return $this
      */
     public function type(string $type): self
@@ -218,8 +215,7 @@ class Button implements \JsonSerializable
     /**
      * Make payload by data and type.
      *
-     * @param mixed $data
-     *
+     * @param  mixed  $data
      * @return $this
      *
      * @throws CouldNotCreateButton

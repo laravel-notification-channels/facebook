@@ -8,7 +8,10 @@ namespace NotificationChannels\Facebook\Enums;
 class AttachmentType
 {
     public const IMAGE = 'image';
+
     public const AUDIO = 'audio';
+
     public const VIDEO = 'video';
+
     public const FILE = 'file';
 }
