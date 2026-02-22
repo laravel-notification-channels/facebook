@@ -1,25 +1,28 @@
-name: Code Style
+name: Check & fix styling
 
-on: [push]
+on:
+    push:
+        paths:
+            - '**.php'
+
+permissions:
+    contents: write
 
 jobs:
-  php-cs-fixer:
-    if: "!contains(github.event.head_commit.message, 'skip ci')"
+    php-code-styling:
+        runs-on: ubuntu-latest
+        timeout-minutes: 5
 
-    runs-on: ubuntu-latest
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v6
+              with:
+                  ref: ${{ github.head_ref }}
 
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-        with:
-          ref: ${{ github.head_ref }}
+            - name: Fix PHP code style issues
+              uses: aglipanci/laravel-pint-action@v2
 
-      - name: Run PHP CS Fixer
-        uses: docker://oskarstark/php-cs-fixer-ga
-
-      - name: Commit changes
-        uses: stefanzweifel/git-auto-commit-action@v4
-        with:
-          commit_message: Apply PHP CS Fixer changes
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+            - name: Commit changes
+              uses: stefanzweifel/git-auto-commit-action@v7
+              with:
+                  commit_message: Fix styling
