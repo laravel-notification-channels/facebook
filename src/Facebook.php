@@ -25,7 +25,7 @@ class Facebook
     /** @var string Default Graph API Version */
     protected $graphApiVersion = '4.0';
 
-    public function __construct(string $token = null, HttpClient $httpClient = null)
+    public function __construct(?string $token = null, ?HttpClient $httpClient = null)
     {
         $this->token = $token;
 

@@ -95,9 +95,9 @@ class CouldNotCreateButton extends \Exception
     public static function invalidPhoneNumberProvided(string $phoneNumber): self
     {
         return new static(
-            "Provided phone number `{$phoneNumber}` format is invalid.".
-            "Format must be '+' prefix followed by the country code, area code and local number.".
-            'Please check the button template docs for more information.'
+            "Provided phone number `{$phoneNumber}` format is invalid."
+            ."Format must be '+' prefix followed by the country code, area code and local number."
+            .'Please check the button template docs for more information.'
         );
     }
 }
